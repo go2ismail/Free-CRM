@@ -45,6 +45,13 @@ public class CommandRepository<T> : ICommandRepository<T> where T : BaseEntity
     {
         _context.Remove(entity);
     }
+    
+    public void PurgeAll()
+    {
+        _context.Set<T>().RemoveRange(_context.Set<T>());
+    }
+
+    
 
     public virtual async Task<T?> GetAsync(string id, CancellationToken cancellationToken = default)
     {

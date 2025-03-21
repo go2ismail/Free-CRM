@@ -14,6 +14,8 @@ public interface ICommandRepository<T> where T : BaseEntity
     void Delete(T entity);
 
     void Purge(T entity);
+    
+    void PurgeAll();
 
     Task<T?> GetAsync(string id, CancellationToken cancellationToken = default);
 
