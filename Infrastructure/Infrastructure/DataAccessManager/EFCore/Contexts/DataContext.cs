@@ -1,4 +1,5 @@
 ﻿using Application.Common.Repositories;
+using Domain.Common;
 using Domain.Entities;
 using Infrastructure.DataAccessManager.EFCore.Configurations;
 using Infrastructure.SecurityManager.AspNetIdentity;
@@ -91,6 +92,27 @@ public class DataContext : IdentityDbContext<ApplicationUser>, IEntityDbSet
         modelBuilder.ApplyConfiguration(new SalesRepresentativeConfiguration());
 
     }
+
+    public async Task ClearDatabaseAsync(CancellationToken cancellationToken = default)
+    {
+        await this.Database.ExecuteSqlRawAsync("EXEC sp_MSForEachTable 'ALTER TABLE ? NOCHECK CONSTRAINT ALL'", cancellationToken);
+        foreach (var entityType in this.Model.GetEntityTypes())
+        {
+            var clrType = entityType.ClrType;
+            if (typeof(BaseEntity).IsAssignableFrom(clrType))
+            {
+                var method = typeof(DataContext).GetMethod("Set", Type.EmptyTypes)?.MakeGenericMethod(clrType);
+
+                if (method?.Invoke(this, null) is IQueryable<object> dbSet)
+                {
+                    this.RemoveRange(dbSet);
+                }
+            }
+        }
+        await this.SaveChangesAsync(cancellationToken);
+        await this.Database.ExecuteSqlRawAsync("EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'", cancellationToken);
+    }
+
 
 }
 

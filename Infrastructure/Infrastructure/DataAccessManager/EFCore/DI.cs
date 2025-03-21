@@ -83,6 +83,18 @@ public static class DI
 
         return host;
     }
+    
+    public static async Task<IHost> ClearDatabaseAsync(this IHost host)
+    {
+        using var scope = host.Services.CreateScope();
+        var serviceProvider = scope.ServiceProvider;
+        var dataContext = serviceProvider.GetRequiredService<DataContext>();
+
+        await dataContext.ClearDatabaseAsync();
+
+        return host;
+    }
+
 }
 
 
