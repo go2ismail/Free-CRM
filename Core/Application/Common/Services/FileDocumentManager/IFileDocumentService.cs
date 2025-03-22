@@ -11,4 +11,8 @@ public interface IFileDocumentService
         CancellationToken cancellationToken = default);
 
     Task<byte[]> GetFileAsync(string fileName, CancellationToken cancellationToken = default);
+
+    Task<string> ExportTableToCsvAsync(string tableName, CancellationToken cancellationToken = default);
+
+    Task<int> ImportTableFromCsvAsync(string tableName, byte[] csvData, CancellationToken cancellationToken = default);
 }

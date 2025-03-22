@@ -109,8 +109,21 @@ public class DataContext : IdentityDbContext<ApplicationUser>, IEntityDbSet
                 }
             }
         }
-        await this.SaveChangesAsync(cancellationToken);
         await this.Database.ExecuteSqlRawAsync("EXEC sp_MSForEachTable 'ALTER TABLE ? WITH CHECK CHECK CONSTRAINT ALL'", cancellationToken);
+        await this.SaveChangesAsync(cancellationToken);
+    }
+        
+    public async Task ClearTableAsync(string tableName, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(tableName))
+            throw new ArgumentException("Invalid table name", nameof(tableName));
+        
+        await this.Database.ExecuteSqlRawAsync($"ALTER TABLE [{tableName}] NOCHECK CONSTRAINT ALL", cancellationToken);
+        
+        await this.Database.ExecuteSqlRawAsync($"DELETE FROM [{tableName}]", cancellationToken);
+        
+        await this.Database.ExecuteSqlRawAsync($"ALTER TABLE [{tableName}] WITH CHECK CHECK CONSTRAINT ALL", cancellationToken);
+        await this.SaveChangesAsync(cancellationToken);
     }
 
 

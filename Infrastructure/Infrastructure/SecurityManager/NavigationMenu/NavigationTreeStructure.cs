@@ -264,8 +264,8 @@ public static class NavigationTreeStructure
                     "IsModule": false
                 },
                 {
-                    "URL": "/Database/Import",
-                    "Name": "Import",
+                    "URL": "/Database/TableList",
+                    "Name": "Table",
                     "IsModule": false
                 }
             ]

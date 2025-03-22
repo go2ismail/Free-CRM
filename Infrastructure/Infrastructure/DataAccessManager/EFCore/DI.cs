@@ -49,6 +49,11 @@ public static class DI
                     .LogTo(Log.Information, LogLevel.Information)
                     .EnableSensitiveDataLogging()
                 );
+                services.AddDbContext<OrderContext>(options =>
+                    options.UseSqlServer(connectionString)
+                        .LogTo(Log.Information, LogLevel.Information)
+                        .EnableSensitiveDataLogging()
+                );
                 services.AddDbContext<CommandContext>(options =>
                     options.UseSqlServer(connectionString)
                     .LogTo(Log.Information, LogLevel.Information)
@@ -62,10 +67,11 @@ public static class DI
                 break;
         }
 
-
+        services.AddScoped<IOrderContext, OrderContext>();
         services.AddScoped<ICommandContext, CommandContext>();
         services.AddScoped<IQueryContext, QueryContext>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
+        services.AddScoped(typeof(IOrderRepository<>), typeof(OrderRepository<>));
         services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepository<>));
 
 
