@@ -51,12 +51,10 @@ namespace Application.Features.DataManager.Commands
                 
                 foreach (var entityType in entityTypes)
                 {
-                    Console.WriteLine($"Entity Type: {entityType.FullName}");
                     var entity = Activator.CreateInstance(entityType);
                    
                     if (entity == null)
                     {
-                        Console.WriteLine($"Failed to create instance of {entityType.FullName}");
                         continue;
                     }
 
@@ -64,14 +62,12 @@ namespace Application.Features.DataManager.Commands
                     var repository = _serviceProvider.GetService(repositoryType);
                     if (repository == null)
                     {
-                        Console.WriteLine($"Repository not found for {entityType.FullName}");
                         continue;
                     }
 
                     var purgeMethod = repository.GetType().GetMethod("PurgeAll");
                     if (purgeMethod != null)
                     {
-                        Console.WriteLine($"Purging data for {entityType.FullName}");
                         purgeMethod.Invoke(repository, null);
                     }
                 }
