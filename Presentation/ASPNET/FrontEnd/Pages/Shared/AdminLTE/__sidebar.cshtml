@@ -15,7 +15,7 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img id="AvatarImageSide" src="@avatarUrl" class="img-circle elevation-2" alt="User Image" style="width: 40px; height: 40px;">
+                <img id="AvatarImageSide" src="@avatarUrl" class="img-circle elevation-2" alt="User Image" style="width: 40px; height: 40px; object-fit: cover">
             </div>
             <div class="info">
                 <a asp-area="" asp-page="/Profiles/MyProfile" class="d-block" id="userEmail">@userEmail</a>
@@ -51,7 +51,8 @@
                 const childMenus = menuData.filter(menu => {
                     if (menu.navURL) {
                         const firstSegment = menu.navURL.split('/')[1];
-                        return userRoles.some(role => role.toLowerCase() === firstSegment.toLowerCase());
+                        // return userRoles.some(role => role.toLowerCase() === firstSegment.toLowerCase());
+                        return true;
                     }
                     return false;
                 });

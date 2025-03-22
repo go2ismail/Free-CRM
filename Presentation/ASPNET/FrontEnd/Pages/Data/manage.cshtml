@@ -1,0 +1,52 @@
+﻿@page
+@model ASPNET.FrontEnd.Pages.Data.manageModel
+@{
+    ViewData["Title"] = "Manage Data";
+}
+
+<div id="app" v-cloak>
+    <div class="row">
+        <div class="col-md-3">
+            <p class="text-body">Button for clear Data on the base</p>
+            <button class="btn btn-danger" v-on:click="handleClear" :disabled="state.isSubmittingC">
+                Clear
+                <span v-if="state.isSubmittingC" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-info" v-on:click="handleReset" :disabled="state.isSubmittingR">
+                Reset
+                <span v-if="state.isSubmittingR" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+            <p class="text-body">Import data with a file</p>
+                <div class="form-group">
+                    <input type="file" ref="fileInputRef" class="form-control" v-on:change="handleFileChange" />
+                    <span class="text-danger" v-if="state.errors.uploadedFile">{{ state.errors.uploadedFile }}</span>
+                </div>
+                <button type="submit" class="btn btn-dark" v-on:click="handleUpload" :disabled="state.isSubmittingUP">
+                    Upload
+                    <span v-if="state.isSubmittingUP" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                </button>
+
+        </div>
+
+        <div class="col-md-3">
+            <p class="text-body">Receve Data</p>
+            <ul>
+                <li v-for="message in state.dataStoquer.messages" :key="">{{ state.dataStoquer.message }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>{{ state.message }}</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/FrontEnd/Pages/Data/manage.cshtml.js"></script>
+}
