@@ -13,7 +13,7 @@ public class ValidateTokenResult
 public class ValidateTokenRequest : IRequest<ValidateTokenResult>
 {
 }
-
+ 
 public class ValidateTokenValidator : AbstractValidator<ValidateTokenRequest>
 {
     public ValidateTokenValidator()

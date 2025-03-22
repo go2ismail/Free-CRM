@@ -1,0 +1,45 @@
+@page
+@{
+    ViewData["Title"] = "Regenerate Data";
+}
+
+<div id="app" class="container-fluid" v-cloak>
+
+    <div class="card-body login-card-body">
+        <p class="login-box-msg">@ViewData["Title"]</p>
+
+        <form v-on:submit.prevent="regenerateAllData">
+            <div class="form-group text-center">
+                <p>Are you sure you want to regenerate all data?</p>
+                <p>Click the button below to confirm and regenerate data completely.</p>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit"
+                            v-bind:disabled="state.isSubmitting"
+                            class="btn btn-primary btn-block">
+                        <span class="spinner-border spinner-border-sm me-2"
+                              v-if="state.isSubmitting"
+                              role="status"
+                              aria-hidden="true"></span>
+                        <span>{{ state.isSubmitting ? '...' : 'Regenerate All Data' }}</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="social-auth-links text-center mb-3">
+            <p>- OR -</p>
+            <a asp-page="/Accounts/Login" class="btn btn-block btn-secondary">
+                <i class="fas fa-sign-in-alt mr-2"></i> Go to Login
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+@section scripts {
+    <script src="~/FrontEnd/Pages/Datas/Generate.cshtml.js"></script>
+}
