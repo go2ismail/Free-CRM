@@ -27,7 +27,7 @@ public class CustomerController : BaseApiController
             Message = $"Success executing {nameof(CreateCustomerAsync)}",
             Content = response
         });
-    }
+    } 
 
     [Authorize]
     [HttpPost("UpdateCustomer")]
