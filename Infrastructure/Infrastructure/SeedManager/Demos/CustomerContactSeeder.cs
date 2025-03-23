@@ -83,6 +83,40 @@ public class CustomerContactSeeder
 
         await _unitOfWork.SaveAsync();
     }
+    
+    
+    public async Task GenerateRandomDataAsync()
+    {
+        var random = new Random();
+        var customerIds = await _customerRepository.GetQuery().Select(x => x.Id).ToListAsync();
+
+        var customerContacts = new List<CustomerContact>();
+        int i = 0;
+        foreach(var customerId in customerIds)
+        {
+            var contactName = $"Customer Contact No {i + 1}";
+            var jobTitle = $"Job Title No {i + 1}";
+
+            customerContacts.Add(new CustomerContact
+            {
+                Name = contactName,
+                Number = _numberSequenceService.GenerateNumber(nameof(CustomerContact), "", "CC"),
+                CustomerId = customerId,
+                JobTitle = jobTitle,
+                EmailAddress = $"contact{i + 1}@randommail.com",
+                PhoneNumber = GenerateRandomPhoneNumber(random)
+            });
+        }
+
+        i++;
+
+        foreach (var contact in customerContacts)
+        {
+            await _customerContactRepository.CreateAsync(contact);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
 
     private static string GetRandomString(string[] array, Random random)
     {

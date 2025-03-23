@@ -87,9 +87,51 @@ public class CustomerSeeder
     {
         return array[random.Next(array.Length)];
     }
+    
+    public async Task GenerateRandomDataAsync()
+    {
+        var groups = (await _groupRepository.GetQuery().ToListAsync()).Select(x => x.Id).ToArray();
+        var categories = (await _categoryRepository.GetQuery().ToListAsync()).Select(x => x.Id).ToArray();
+        var random = new Random();
+        int numberOfCustomers = random.Next(5, 15);
+
+        var customers = new List<Customer>();
+
+        for (int i = 0; i < numberOfCustomers; i++)
+        {
+            var customerName = $"Customer No {i + 1}";
+            var customer = new Customer
+            {
+                Name = customerName,
+                Number = _numberSequenceService.GenerateNumber(nameof(Customer), "", "CST"),
+                CustomerGroupId = GetRandomValue(groups, random),
+                CustomerCategoryId = GetRandomValue(categories, random),
+                City = $"City {random.Next(1, 100)}",
+                Street = $"Street {random.Next(1, 50)}",
+                State = $"State {random.Next(1, 20)}",
+                ZipCode = $"{random.Next(10000, 99999)}",
+                PhoneNumber = GenerateRandomPhoneNumber(random),
+                EmailAddress = $"customer{random.Next(1, 1000)}@randommail.com"
+            };
+
+            customers.Add(customer);
+        }
+
+        foreach (var customer in customers)
+        {
+            await _customerRepository.CreateAsync(customer);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
 
     private static string GetRandomString(string[] array, Random random)
     {
         return array[random.Next(array.Length)];
+    }
+    
+    private static string GenerateRandomPhoneNumber(Random random)
+    {
+        return $"+1-{random.Next(100, 999)}-{random.Next(100, 999)}-{random.Next(1000, 9999)}";
     }
 }
