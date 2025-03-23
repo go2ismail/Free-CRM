@@ -39,5 +39,6 @@ public interface IEntityDbSet
     public DbSet<LeadActivity> LeadActivity { get; set; }
     public DbSet<SalesTeam> SalesTeam { get; set; }
     public DbSet<SalesRepresentative> SalesRepresentative { get; set; }
+    public DbSet<ParamSettings> ParamSettings { get; set; }
 }
 

@@ -1,6 +1,7 @@
 ﻿using Infrastructure.CSVManager;
 using Infrastructure.DataAccessManager.EFCore;
 using Infrastructure.EmailManager;
+using Infrastructure.ExpenseManager;
 using Infrastructure.FileDocumentManager;
 using Infrastructure.FileImageManager;
 using Infrastructure.LogManager.Serilogs;
@@ -46,6 +47,7 @@ public static class DependencyInjection
         
         //>>> FileImageManager
         services.RegisterCSVManager(configuration);
+        services.RegisterExpenseManager(configuration);
 
         return services;
     }

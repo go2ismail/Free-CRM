@@ -77,12 +77,14 @@ public static class DI
         using var scope = host.Services.CreateScope();
         var serviceProvider = scope.ServiceProvider;
 
-        // Create database using DataContext
+        // Create or update database using migrations
         var dataContext = serviceProvider.GetRequiredService<DataContext>();
-        dataContext.Database.EnsureCreated(); // Ensure database is created (development only)
+        dataContext.Database.EnsureCreated(); // Applique les migrations en attente
 
         return host;
     }
+    
+   
 }
 
 
