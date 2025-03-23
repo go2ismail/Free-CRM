@@ -16,6 +16,14 @@ public class TableController : BaseApiController
     {
     }
     
+    public class ImportTableRequest
+    {
+        public IFormFile File { get; set; }
+        
+        public string Name { get; set; }
+    }
+
+    
     [Authorize]
     [HttpPost("DeleteTable")]
     public async Task<ActionResult<ApiSuccessResult<DeleteTableResult>>> DeleteTableAsync(DeleteTableRequest request, CancellationToken cancellationToken)
@@ -80,22 +88,22 @@ public class TableController : BaseApiController
     
     [Authorize]
     [HttpPost("ImportTable")]
-    public async Task<ActionResult<ImportFileResult>> ImportTableAsync([FromForm] IFormFile file, [FromForm] string name, CancellationToken cancellationToken)
+    public async Task<ActionResult<ImportFileResult>> ImportTableAsync([FromForm] ImportTableRequest requete, CancellationToken cancellationToken)
     {
         try
         {
-            if (file == null || file.Length == 0)
+            if (requete.File == null || requete.File.Length == 0)
             {
                 return BadRequest(new { Message = "No file provided or file is empty." });
             }
 
             using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream, cancellationToken);
+            await requete.File.CopyToAsync(memoryStream, cancellationToken);
             byte[] fileBytes = memoryStream.ToArray();
 
             var request = new ImportFileRequest
             {
-                Name = name,
+                Name = requete.Name,
                 CsvData = fileBytes
             };
 
