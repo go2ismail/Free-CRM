@@ -1,6 +1,9 @@
 ﻿const App = {
     setup() {
         const state = Vue.reactive({
+            confirmationData: null,
+            validationData: null,
+            showConfirmationModal: false, 
             mainData: [],
             deleteMode: false,
             campaignListLookupData: [],
@@ -68,6 +71,9 @@
         };
 
         const resetFormState = () => {
+            state.confirmationData= null;
+            state.validationData= null;
+            state.showConfirmationModal= false;
             state.id = '';
             state.number = '';
             state.expenseDate = '';
@@ -257,6 +263,8 @@
                     throw error;
                 }
             },
+            
+            
             createMainData: async (expenseDate, title, amount, description, status, campaignId, createdById) => {
                 try {
                     const response = await AxiosManager.post('/Expense/CreateExpense', {
@@ -267,6 +275,7 @@
                     throw error;
                 }
             },
+            
             updateMainData: async (id, expenseDate, title, amount, description, status, campaignId, updatedById) => {
                 try {
                     const response = await AxiosManager.post('/Expense/UpdateExpense', {
@@ -306,6 +315,72 @@
         };
 
         const methods = {
+            checkBudgetAlert: async () => {
+                try {
+                    const response = await AxiosManager.get('/Expense/ValidateExpense?campaignId='+state.campaignId+'&amount='+state.amount, {
+                    });
+                    state.confirmationData = {
+                        expenseDate: state.expenseDate,
+                        title: state.title,
+                        amount: state.amount,
+                        description: state.description,
+                        status: state.status,
+                        campaignId: state.campaignId,
+                    };
+
+                    if (response.data.alert) {
+                        console.log(response.data);
+                        state.validationData = {
+                            totalBudget: response.data.data.totalBudget, 
+                            totalExpense: response.data.data.totalExpenses,
+                            budgetAlert: response.data.data.budgetAlertThreshold,
+                        };
+                        state.showConfirmationModal = true;
+                    } else {
+                        await methods.createExpense();
+                    }
+                } catch (error) {
+                    console.error('Error checking budget alert:', error);
+                }
+            },
+            createExpensecreateExpense: async () => {
+                try {
+                    const response = await services.createMainData(
+                        state.confirmationData.expenseDate,
+                        state.confirmationData.title,
+                        state.confirmationData.amount,
+                        state.confirmationData.description,
+                        state.confirmationData.status,
+                        state.confirmationData.campaignId,
+                        StorageManager.getUserId()
+                    );
+                    if (response.data.code === 200) {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Expense Created Successfully',
+                            text: 'The expense has been created.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Creation Failed',
+                            text: response.data.message ?? 'Please check your data.',
+                            confirmButtonText: 'Try Again'
+                        });
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'An Error Occurred',
+                        text: error.response?.data?.message ?? 'Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                } finally {
+                    state.showConfirmationModal = false; // Fermer la modal après l'opération
+                }
+            },
             populateMainData: async () => {
                 const response = await services.getMainData();
                 state.mainData = response?.data?.content?.data.map(item => ({
@@ -334,12 +409,51 @@
         const handler = {
             handleSubmit: async function () {
                 try {
-
                     state.isSubmitting = true;
                     await new Promise(resolve => setTimeout(resolve, 300));
-
                     if (!validateForm()) {
+                        state.isSubmitting = false;
                         return;
+                    }
+                    if (state.id === '') {
+                        await methods.checkBudgetAlert(state.campaignId, state.amount);
+                    }
+
+                    if (state.showConfirmationModal) {
+                        Swal.fire({
+                            title: 'Budget Alert',
+                            html: `
+                                <p>Warning: Your expenses have exceeded the budget limit. Do you want to proceed with creating this expense?</p>
+                                <ul>
+                                    <li><strong>Total budget:</strong> ${state.validationData?.totalBudget || 'N/A'}</li>
+                                    <li><strong>Total expenses:</strong> ${state.validationData?.totalExpense || 'N/A'}</li>
+                                    <li><strong>Percent limit:</strong> ${state.validationData?.budgetAlert || 'N/A'}</li>
+                                </ul>
+                            `,
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Confirm',
+                            cancelButtonText: 'Dismiss',
+                            allowOutsideClick: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                handler.handleSubmitConfirmed();
+                            } else {
+                                mainGrid.refresh();
+                                Swal.fire({
+                                    icon: 'info',
+                                    title: 'Action Cancelled',
+                                    text: 'No changes have been made.',
+                                    timer: 2000,
+                                    showConfirmButton: false
+                                });
+                                setTimeout(() => {
+                                    mainModal.obj.hide();
+                                }, 2000);
+                            }
+                        });
+                        state.showConfirmationModal = false;
+                        return; 
                     }
 
                     const response = state.id === ''
@@ -351,6 +465,7 @@
                     if (response.data.code === 200) {
                         await methods.populateMainData();
                         mainGrid.refresh();
+
                         Swal.fire({
                             icon: 'success',
                             title: state.deleteMode ? 'Delete Successful' : 'Save Successful',
@@ -358,6 +473,7 @@
                             timer: 2000,
                             showConfirmButton: false
                         });
+
                         setTimeout(() => {
                             mainModal.obj.hide();
                         }, 2000);
@@ -379,10 +495,65 @@
                     });
                 } finally {
                     state.isSubmitting = false;
+                    state.showConfirmationModal = false;
                 }
             },
-        };
 
+
+            handleSubmitConfirmed: async function () {
+                try {
+                    state.isSubmitting = true;
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                    if (!validateForm()) {
+                        return;
+                    }
+
+                    const response = state.id === ''
+                            ? await services.createMainData(state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId())
+                            : state.deleteMode
+                                ? await services.deleteMainData(state.id, StorageManager.getUserId())
+                                : await services.updateMainData(state.id, state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId());
+
+                        if (response.data.code === 200) {
+                            await methods.populateMainData();
+                            mainGrid.refresh();
+                            Swal.fire({
+                                icon: 'success',
+                                title: state.deleteMode ? 'Delete Successful' : 'Save Successful',
+                                text: 'Form will be closed...',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
+                            setTimeout(() => {
+                                mainModal.obj.hide();
+                            }, 2000);
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: state.deleteMode ? 'Delete Failed' : 'Save Failed',
+                                text: response.data.message ?? 'Please check your data.',
+                                confirmButtonText: 'Try Again'
+                            });
+                        }
+                    
+
+                } catch (error) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'An Error Occurred',
+                        text: error.response?.data?.message ?? 'Please try again.',
+                        confirmButtonText: 'OK'
+                    });
+                } finally {
+                    state.isSubmitting = false;
+                    state.showConfirmationModal = false;
+                }
+            },
+            closeModel : function closeModal() {
+                state.showConfirmationModal = false;
+            }
+
+    };
 
         Vue.onMounted(async () => {
             try {

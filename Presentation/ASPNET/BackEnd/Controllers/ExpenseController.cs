@@ -1,4 +1,5 @@
-﻿using Application.Features.ExpenseManager.Commands;
+﻿using Application.Common.Services.ExpenseManager;
+using Application.Features.ExpenseManager.Commands;
 using Application.Features.ExpenseManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -11,9 +12,26 @@ namespace ASPNET.BackEnd.Controllers;
 [Route("api/[controller]")]
 public class ExpenseController : BaseApiController
 {
-    public ExpenseController(ISender sender) : base(sender)
+    private readonly IExpenseService _expenseService;
+    public ExpenseController(ISender sender, IExpenseService expenseService) : base(sender)
     {
+        _expenseService = expenseService;
     }
+    
+    
+    [HttpGet("ValidateExpense")]
+    public async Task<IActionResult> ValidateExpense([FromQuery] string campaignId, [FromQuery] double amount, CancellationToken cancellationToken)
+    {
+        var result = await _expenseService.CheckBudgetAlertAsync(campaignId, amount, cancellationToken);
+
+        if (result == null)
+        {
+            return Ok(new { Message = "No budget alert.", Alert = false });
+        }
+
+        return Ok(new { Message = "Budget alert triggered!", Alert = true, Data = result });
+    }
+
 
     [Authorize]
     [HttpPost("CreateExpense")]

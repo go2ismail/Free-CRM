@@ -1,4 +1,5 @@
-﻿using Infrastructure.DataAccessManager.EFCore.Contexts;
+﻿using Application.Common.Services.SeedManager;
+using Infrastructure.DataAccessManager.EFCore.Contexts;
 using Infrastructure.SeedManager.Demos;
 using Infrastructure.SeedManager.Systems;
 using Microsoft.Extensions.Configuration;
@@ -16,7 +17,7 @@ public static class DI
         services.AddScoped<RoleSeeder>();
         services.AddScoped<UserAdminSeeder>();
         services.AddScoped<CompanySeeder>();
-
+        services.AddScoped<IDataSeederService, DataSeederService>();
         return services;
     }
 
@@ -74,6 +75,7 @@ public static class DI
         services.AddScoped<LeadSeeder>();
         services.AddScoped<LeadContactSeeder>();
         services.AddScoped<LeadActivitySeeder>();
+        services.AddScoped<IDataSeederService, DataSeederService>();
         return services;
     }
     public static IHost SeedDemoData(this IHost host)
