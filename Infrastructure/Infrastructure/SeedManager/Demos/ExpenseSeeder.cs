@@ -61,6 +61,43 @@ public class ExpenseSeeder
         await _unitOfWork.SaveAsync();
     }
 
+    public async Task GenerateRandomDataAsync()
+    {
+        var random = new Random();
+        int numberOfExpenses = random.Next(2, 6);
+        var confirmedCampaigns = await _campaignRepository.GetQuery()
+            .Where(c => c.Status == CampaignStatus.Confirmed)
+            .Select(c => c.Id)
+            .ToListAsync();
+
+        var expenses = new List<Expense>();
+
+        for (int i = 0; i < numberOfExpenses; i++)
+        {
+            var expenseDate = GetRandomDate(random);
+            var status = GetRandomStatus(random);
+            var expense = new Expense
+            {
+                Number = _numberSequenceService.GenerateNumber(nameof(Expense), "", "EXP"),
+                Title = $"Random Expense {i + 1}",
+                Description = $"Automatically generated expense {i + 1}",
+                ExpenseDate = expenseDate,
+                Status = status,
+                Amount = 1000 * Math.Ceiling((random.NextDouble() * 89) + 1),
+                CampaignId = GetRandomValue(confirmedCampaigns, random)
+            };
+
+            expenses.Add(expense);
+        }
+
+        foreach (var expense in expenses)
+        {
+            await _expenseRepository.CreateAsync(expense);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
     private ExpenseStatus GetRandomStatus(Random random)
     {
         var statuses = new[] { ExpenseStatus.Draft, ExpenseStatus.Cancelled, ExpenseStatus.Confirmed, ExpenseStatus.Archived };
@@ -84,6 +121,13 @@ public class ExpenseSeeder
     private static string GetRandomValue(List<string> list, Random random)
     {
         return list[random.Next(list.Count)];
+    }
+
+    private static DateTime GetRandomDate(Random random)
+    {
+        var start = DateTime.Now.AddMonths(-12);
+        var range = (DateTime.Now - start).Days;
+        return start.AddDays(random.Next(range));
     }
 
     private static DateTime[] GetRandomDays(int year, int month, int count)

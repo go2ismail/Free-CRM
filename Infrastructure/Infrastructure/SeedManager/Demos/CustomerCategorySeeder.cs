@@ -27,12 +27,27 @@ public class CustomerCategorySeeder
             new CustomerCategory { Name = "Startup" },
             new CustomerCategory { Name = "Micro" }
         };
-
+        
         foreach (var category in customerCategories)
         {
             await _categoryRepository.CreateAsync(category);
         }
 
+        await _unitOfWork.SaveAsync();
+    }
+    
+    public async Task GenerateRandomDataAsync()
+    {
+        var random = new Random();
+        
+        int numberOfBudgets = random.Next(2, 6);
+        for (int i = 0; i < numberOfBudgets; i++)
+        {
+            var customerCategory = new CustomerCategory { Name = "Customer Category n-" + i };
+            await _categoryRepository.CreateAsync(customerCategory);
+        };
+        
+       
         await _unitOfWork.SaveAsync();
     }
 }
