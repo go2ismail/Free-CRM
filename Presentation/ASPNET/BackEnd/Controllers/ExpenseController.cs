@@ -1,4 +1,5 @@
-﻿using Application.Features.ExpenseManager.Commands;
+﻿using Application.Features.ConfigManager;
+using Application.Features.ExpenseManager.Commands;
 using Application.Features.ExpenseManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -11,22 +12,86 @@ namespace ASPNET.BackEnd.Controllers;
 [Route("api/[controller]")]
 public class ExpenseController : BaseApiController
 {
-    public ExpenseController(ISender sender) : base(sender)
+
+    private readonly IMediator _mediator;
+    public ExpenseController(ISender sender, IMediator mediator) : base(sender)
     {
+        _mediator = mediator;
     }
 
     [Authorize]
     [HttpPost("CreateExpense")]
-    public async Task<ActionResult<ApiSuccessResult<CreateExpenseResult>>> CreateExpenseAsync(CreateExpenseRequest request, CancellationToken cancellationToken)
+    public async Task<ActionResult<ApiSuccessResult<CreateExpenseResult>>> CreateExpenseAsync(CreateExpenseRequest request, CancellationToken cancellationToken, bool force)
     {
-        var response = await _sender.Send(request, cancellationToken);
-
-        return Ok(new ApiSuccessResult<CreateExpenseResult>
+        try
         {
-            Code = StatusCodes.Status200OK,
-            Message = $"Success executing {nameof(CreateExpenseAsync)}",
-            Content = response
-        });
+
+            AnalyseExpense analyse = new AnalyseExpense(_mediator);
+            ConfigMethode configService = new ConfigMethode(_mediator);
+            var config = await configService.GetConfigByNameAsync("AlertBudget");
+            Console.WriteLine("CampaidnId");
+            Console.WriteLine(request.CampaignId);
+
+            if (await analyse.IsExpenseExceedingBudget(request.Amount ?? 0, request.CampaignId))
+            {
+                throw new Exception("Expense depasee le budget");
+            }
+
+            if (await analyse.IsExpenseExceedingBudgetAlert(request.Amount ?? 0, request.CampaignId, int.Parse(config), request.ExpenseDate.Value))
+            {
+                // Retourner un code spécial pour indiquer le dépassement de budget
+                return Ok(new ApiSuccessResult<CreateExpenseResult>
+                {
+                    Code = 409, // Code personnalisé pour budget dépassé (Conflict)
+                    Message = "Expense exceeds the budget. Do you want to continue?",
+                    Content = null
+                });
+            }
+
+
+            // Si pas de problème de budget ou si ForceCreate est true, continuer normalement
+            var response = await _sender.Send(request, cancellationToken);
+            return Ok(new ApiSuccessResult<CreateExpenseResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(CreateExpenseAsync)}",
+                Content = response
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiErrorResult
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Message = ex.Message
+            });
+        }
+    }
+
+    [Authorize]
+    [HttpPost("CreateExpenseWitoutAlert")]
+    public async Task<ActionResult<ApiSuccessResult<CreateExpenseResult>>> CreateExpenseAsyncW(CreateExpenseRequest request, CancellationToken cancellationToken, bool force)
+    {
+        try
+        {
+
+            // Si pas de problème de budget ou si ForceCreate est true, continuer normalement
+            var response = await _sender.Send(request, cancellationToken);
+            return Ok(new ApiSuccessResult<CreateExpenseResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(CreateExpenseAsyncW)}",
+                Content = response
+            });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new ApiErrorResult
+            {
+                Code = StatusCodes.Status400BadRequest,
+                Message = ex.Message
+            });
+        }
     }
 
     [Authorize]
@@ -127,6 +192,40 @@ public class ExpenseController : BaseApiController
         {
             Code = StatusCodes.Status200OK,
             Message = $"Success executing {nameof(GetExpenseByCampaignIdListAsync)}",
+            Content = response
+        });
+    }
+
+
+    [Authorize]
+    [HttpPost("UpdateConfig")]
+    public async Task<ActionResult<ApiSuccessResult<UpdateConfigResult>>> UpdateConfigAsync(UpdateConfigRequest request, CancellationToken cancellationToken)
+    {
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<UpdateConfigResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(UpdateConfigAsync)}",
+            Content = response
+        });
+    }
+
+    [Authorize]
+    [HttpGet("GetConfigByName")]
+    public async Task<ActionResult<ApiSuccessResult<GetConfigByNameResult>>> GetConfigByNameAsync(
+    [FromQuery] string name,
+    CancellationToken cancellationToken)
+    {
+
+        Console.WriteLine(name);
+        var request = new GetConfigByNameRequest(name);
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetConfigByNameResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetConfigByNameAsync)}",
             Content = response
         });
     }

@@ -267,6 +267,16 @@
                     throw error;
                 }
             },
+            createMainDataWithoutAlert: async (expenseDate, title, amount, description, status, campaignId, createdById) => {
+                try {
+                    const response = await AxiosManager.post('/Expense/CreateExpenseWitoutAlert', {
+                        expenseDate, title, amount, description, status, campaignId, createdById
+                    });
+                    return response;
+                } catch (error) {
+                    throw error;
+                }
+            },
             updateMainData: async (id, expenseDate, title, amount, description, status, campaignId, updatedById) => {
                 try {
                     const response = await AxiosManager.post('/Expense/UpdateExpense', {
@@ -347,7 +357,7 @@
                         : state.deleteMode
                             ? await services.deleteMainData(state.id, StorageManager.getUserId())
                             : await services.updateMainData(state.id, state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId());
-
+                    console.log(response)
                     if (response.data.code === 200) {
                         await methods.populateMainData();
                         mainGrid.refresh();
@@ -361,12 +371,34 @@
                         setTimeout(() => {
                             mainModal.obj.hide();
                         }, 2000);
-                    } else {
+                    } else if (response.data.code === 409) {
                         Swal.fire({
                             icon: 'error',
                             title: state.deleteMode ? 'Delete Failed' : 'Save Failed',
                             text: response.data.message ?? 'Please check your data.',
-                            confirmButtonText: 'Try Again'
+                            confirmButtonText: 'Continue'
+                        }).then(async (result) => {  // Ajout du mot-clé async ici
+                            if (result.isConfirmed) {
+                                // Le code à exécuter si l'utilisateur clique sur "Continue"
+                                const forceResponse = await services.createMainDataWithoutAlert(state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId());
+                                console.log("L'utilisateur a cliqué sur Continue");
+
+                                // Traiter la réponse de l'appel forcé
+                                if (forceResponse.data.code === 200) {
+                                    await methods.populateMainData();
+                                    mainGrid.refresh();
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Save Successful',
+                                        text: 'Form will be closed...',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                    setTimeout(() => {
+                                        mainModal.obj.hide();
+                                    }, 2000);
+                                }
+                            }
                         });
                     }
 

@@ -1,4 +1,5 @@
-﻿using Infrastructure.DataAccessManager.EFCore;
+﻿using Application.Features;
+using Infrastructure.DataAccessManager.EFCore;
 using Infrastructure.EmailManager;
 using Infrastructure.FileDocumentManager;
 using Infrastructure.FileImageManager;
@@ -8,6 +9,7 @@ using Infrastructure.SecurityManager.Tokens;
 using Infrastructure.SeedManager;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 
 namespace Infrastructure;
 
@@ -42,6 +44,8 @@ public static class DependencyInjection
 
         //>>> FileImageManager
         services.RegisterFileImageManager(configuration);
+        //>>> ConfigManager
+       
 
         return services;
     }
