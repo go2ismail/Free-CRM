@@ -36,4 +36,25 @@ public class VendorCategorySeeder
 
         await _unitOfWork.SaveAsync();
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var vendorCategories = new List<VendorCategory>();
+
+        for (int i = 1; i <= number; i++)
+        {
+            vendorCategories.Add(new VendorCategory
+            {
+                Name = $"VendorCategory {i}"
+            });
+        }
+
+        foreach (var category in vendorCategories)
+        {
+            await _categoryRepository.CreateAsync(category);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
 }

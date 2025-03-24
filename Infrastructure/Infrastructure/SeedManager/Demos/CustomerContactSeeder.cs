@@ -85,7 +85,7 @@ public class CustomerContactSeeder
     }
     
     
-    public async Task GenerateRandomDataAsync()
+    public async Task GenerateRandomDataAsync(int number)
     {
         var random = new Random();
         var customerIds = await _customerRepository.GetQuery().Select(x => x.Id).ToListAsync();
@@ -106,9 +106,9 @@ public class CustomerContactSeeder
                 EmailAddress = $"contact{i + 1}@randommail.com",
                 PhoneNumber = GenerateRandomPhoneNumber(random)
             });
+            i++;
         }
 
-        i++;
 
         foreach (var contact in customerContacts)
         {

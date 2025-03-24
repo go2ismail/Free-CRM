@@ -15,7 +15,6 @@ namespace Application.Features.CSVManager.Commands
     {
         public string FilePath { get; set; }
         public string EntityName { get; set; }
-        public Dictionary<string, string> ColumnMappings { get; set; }
         public string Separator { get; set; } = ","; 
     }
 
@@ -32,7 +31,7 @@ namespace Application.Features.CSVManager.Commands
         {
             try
             {
-                await _csvImportService.ImportCsvAsync<object>(request.FilePath, request.EntityName, request.ColumnMappings, request.Separator);
+                await _csvImportService.ImportCsvAsync<object>(request.FilePath, request.EntityName,  request.Separator);
 
                 return new ImportCsvResult
                 {
@@ -42,7 +41,7 @@ namespace Application.Features.CSVManager.Commands
             catch (Exception ex)
             {
                 return new ImportCsvResult
-                {
+                {   
                     Message = $"Error during CSV import: {ex.Message}"
                 };
             }

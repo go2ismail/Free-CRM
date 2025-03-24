@@ -41,7 +41,7 @@ const App = {
         };
 
         const handleSubmit = async () => {
-            if (!state.file || !state.selectedTable || state.columnMappings.length === 0) {
+            if (!state.file || !state.selectedTable ) {
                 Swal.fire({
                     icon: 'warning',
                     title: 'Champs manquants',

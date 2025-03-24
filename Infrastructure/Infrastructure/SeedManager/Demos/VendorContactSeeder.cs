@@ -88,4 +88,33 @@ public class VendorContactSeeder
     {
         return array[random.Next(array.Length)];
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var vendorIds = await _vendorRepository.GetQuery().Select(x => x.Id).ToListAsync();
+        var random = new Random();
+        var vendorContacts = new List<VendorContact>();
+        int i = 0;
+        foreach (var vendorId in vendorIds)
+            {
+                vendorContacts.Add(new VendorContact
+                {
+                    Name = $"VendorContact {i}",
+                    Number = _numberSequenceService.GenerateNumber(nameof(VendorContact), "", "VC"),
+                    VendorId = vendorId,
+                    JobTitle = $"Job Title {i}",
+                    EmailAddress = $"vendorcontact{i}@company.com",
+                    PhoneNumber = $"+1-{random.Next(100, 999)}-{random.Next(100, 999)}-{random.Next(1000, 9999)}"
+                });
+                i++;
+            }
+
+        foreach (var contact in vendorContacts)
+        {
+            await _vendorContactRepository.CreateAsync(contact);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
 }

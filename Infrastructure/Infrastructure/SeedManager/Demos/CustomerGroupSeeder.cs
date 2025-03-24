@@ -37,11 +37,10 @@ public class CustomerGroupSeeder
         await _unitOfWork.SaveAsync();
     }
     
-    public async Task GenerateRandomDataAsync()
+    public async Task GenerateRandomDataAsync(int numberOfBudgets)
     {
         var random = new Random();
         
-        int numberOfBudgets = random.Next(2, 6);
         for (int i = 0; i < numberOfBudgets; i++)
         {
             var customerGroup = new CustomerGroup() { Name = "Customer Group n-" + i };

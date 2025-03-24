@@ -21,8 +21,9 @@ namespace Infrastructure.CSVManager
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public CsvImportService(IServiceProvider serviceProvider, IUnitOfWork unitOfWork, IOptions<CSVSettings> csvSettings, 
-                                RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
+        public CsvImportService(IServiceProvider serviceProvider, IUnitOfWork unitOfWork,
+            IOptions<CSVSettings> csvSettings,
+            RoleManager<IdentityRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _serviceProvider = serviceProvider;
             _unitOfWork = unitOfWork;
@@ -31,100 +32,110 @@ namespace Infrastructure.CSVManager
             _userManager = userManager;
         }
 
-        public async Task ImportCsvAsync<T>(string filePath, string entityTypeName, Dictionary<string, string> columnMappings, string separator = ",") where T : class
+        public async Task ImportCsvAsync<T>(string filePath, string entityTypeName, string separator = ",")
+            where T : class
         {
-            separator ??= _csvSettings.Separator; 
-
-            if (entityTypeName == "UserManager")
+            try
             {
-                await ImportUsersFromCsv(filePath, columnMappings, separator);
-                return;
-            }
-            if (entityTypeName == "RoleManager")
-            {
-                await ImportRolesFromCsv(filePath, columnMappings, separator);
-                return;
-            }
-
-            var entityType = Assembly.GetAssembly(typeof(BaseEntity))
-                .GetTypes()
-                .FirstOrDefault(t => t.Name == entityTypeName && t.IsClass && !t.IsAbstract && typeof(BaseEntity).IsAssignableFrom(t) && t != typeof(BaseEntity));
-            
-            if (entityType == null)
-                throw new Exception($"Entity {entityTypeName} not found");
-
-            var repositoryType = typeof(ICommandRepository<>).MakeGenericType(entityType);
-            var repository = _serviceProvider.GetService(repositoryType);
-            if (repository == null)
-                throw new Exception($"Repository for {entityTypeName} not found");
-
-            using (var reader = new StreamReader(filePath))
-            {
-                var headers = reader.ReadLine()?.Split(separator);
-
-                if (headers == null)
-                    throw new Exception("The CSV file is empty or has no headers.");
-
-                var records = new List<Dictionary<string, string>>();
-                string line;
-
-                while ((line = reader.ReadLine()) != null)
+                if (entityTypeName == "UserManager")
                 {
-                    var values = line.Split(separator);
-                    var record = new Dictionary<string, string>();
-
-                    for (int i = 0; i < headers.Length; i++)
-                    {
-                        if (i < values.Length)
-                            record[headers[i]] = values[i];
-                    }
-
-                    records.Add(record);
+                    await ImportUsersFromCsv(filePath, separator);
+                    await _unitOfWork.SaveAsync();
+                    return;
                 }
 
-                foreach (var record in records)
+                if (entityTypeName == "RoleManager")
                 {
-                    var entity = Activator.CreateInstance(entityType);
-                    foreach (var mapping in columnMappings)
-                    {
-                        var csvColumn = mapping.Key;
-                        var entityProperty = mapping.Value;
+                    await ImportRolesFromCsv(filePath, separator);
+                    await _unitOfWork.SaveAsync();
+                    return;
+                }
 
-                        var property = entityType.GetProperty(entityProperty);
-                        if (property != null && record.ContainsKey(csvColumn))
+                var entityType = Assembly.GetAssembly(typeof(BaseEntity))
+                    .GetTypes()
+                    .FirstOrDefault(t =>
+                        t.Name == entityTypeName && t.IsClass && !t.IsAbstract &&
+                        typeof(BaseEntity).IsAssignableFrom(t) && t != typeof(BaseEntity));
+
+                if (entityType == null)
+                    throw new Exception($"Entity {entityTypeName} not found");
+
+                var repositoryType = typeof(ICommandRepository<>).MakeGenericType(entityType);
+                var repository = _serviceProvider.GetService(repositoryType);
+                if (repository == null)
+                    throw new Exception($"Repository for {entityTypeName} not found");
+
+                var entities = new List<object>(); // Liste temporaire pour stocker les entités créées
+
+                using (var reader = new StreamReader(filePath))
+                {
+                    var headers = reader.ReadLine()?.Split(separator);
+                    if (headers == null)
+                        throw new Exception("The CSV file is empty or has no headers.");
+
+                    // Récupération des propriétés de l'entité (insensibles à la casse)
+                    var properties = entityType.GetProperties().ToDictionary(p => p.Name.ToLower(), p => p);
+
+                    string line;
+                    while ((line = reader.ReadLine()) != null)
+                    {
+                        var values = line.Split(separator);
+                        var record = new Dictionary<string, string>();
+
+                        for (int i = 0; i < headers.Length; i++)
                         {
-                            try
+                            if (i < values.Length)
+                                record[headers[i]] = values[i];
+                        }
+
+                        var entity = Activator.CreateInstance(entityType);
+                        foreach (var header in headers)
+                        {
+                            var columnName = header.ToLower();
+                            if (properties.TryGetValue(columnName, out var property))
                             {
-                                var value = CsvHelperExtensions.ConvertToType(record[csvColumn], property.PropertyType);
-                                property.SetValue(entity, value);
-                            }
-                            catch (Exception ex)
-                            {
-                                Console.WriteLine($"Error converting value for {csvColumn}: {ex.Message}");
+                                try
+                                {
+                                    var value = CsvHelperExtensions.ConvertToType(record[header],
+                                        property.PropertyType);
+                                    property.SetValue(entity, value);
+                                }
+                                catch (Exception ex)
+                                {
+                                    throw new Exception($"Error converting value for column '{header}': {ex.Message}");
+                                }
                             }
                         }
-                    }
 
-                    try
-                    {
-                        repository.GetType().GetMethod("Create")?.Invoke(repository, new object[] { entity });
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Error inserting entity: {ex.Message}");
+                        try
+                        {
+                            repository.GetType().GetMethod("Create")?.Invoke(repository, new object[] { entity });
+                            entities.Add(entity);
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Error inserting entity: {ex.Message}");
+                        }
                     }
                 }
-            }
 
-            await _unitOfWork.SaveAsync();
+                if (entities.Any())
+                {
+                    await _unitOfWork.SaveAsync();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
-        public async Task ImportUsersFromCsv(string filePath, Dictionary<string, string> columnMappings, string separator)
+
+        public async Task ImportUsersFromCsv(string filePath, string separator)
         {
             using (var reader = new StreamReader(filePath))
             {
                 var headers = reader.ReadLine()?.Split(separator);
-
                 if (headers == null)
                     throw new Exception("The CSV file is empty or has no headers.");
 
@@ -137,15 +148,17 @@ namespace Infrastructure.CSVManager
                     for (int i = 0; i < headers.Length; i++)
                     {
                         if (i < values.Length)
-                            record[headers[i]] = values[i];
+                            record[headers[i].ToLower()] =
+                                values[i]; // On stocke en lowercase pour correspondance insensible à la casse
                     }
 
-                    var email = record.ContainsKey("Email") ? record["Email"] : null;
-                    var firstName = record.ContainsKey("FirstName") ? record["FirstName"] : "User";
-                    var lastName = record.ContainsKey("LastName") ? record["LastName"] : "Default";
-                    var password = record.ContainsKey("Password") ? record["Password"] : "Password@123";
+                    // Vérification des champs obligatoires
+                    if (!record.TryGetValue("email", out var email) || string.IsNullOrEmpty(email))
+                        continue;
 
-                    if (string.IsNullOrEmpty(email)) continue;
+                    var firstName = record.GetValueOrDefault("firstname", "User");
+                    var lastName = record.GetValueOrDefault("lastname", "Default");
+                    var password = record.GetValueOrDefault("password", "Password@123");
 
                     var existingUser = await _userManager.FindByEmailAsync(email);
                     if (existingUser == null)
@@ -157,6 +170,7 @@ namespace Infrastructure.CSVManager
 
                         await _userManager.CreateAsync(user, password);
 
+                        // Ajout automatique de l'utilisateur aux rôles admin
                         var roles = RoleHelper.GetAdminRoles();
                         foreach (var role in roles)
                         {
@@ -169,13 +183,13 @@ namespace Infrastructure.CSVManager
                 }
             }
         }
-
-        public async Task ImportRolesFromCsv(string filePath, Dictionary<string, string> columnMappings, string separator)
+        
+        
+        public async Task ImportRolesFromCsv(string filePath, string separator)
         {
             using (var reader = new StreamReader(filePath))
             {
                 var headers = reader.ReadLine()?.Split(separator);
-
                 if (headers == null)
                     throw new Exception("The CSV file is empty or has no headers.");
 
@@ -188,11 +202,11 @@ namespace Infrastructure.CSVManager
                     for (int i = 0; i < headers.Length; i++)
                     {
                         if (i < values.Length)
-                            record[headers[i]] = values[i];
+                            record[headers[i].ToLower()] = values[i]; // Insensible à la casse
                     }
 
-                    var roleName = record.ContainsKey("RoleName") ? record["RoleName"] : null;
-                    if (string.IsNullOrEmpty(roleName)) continue;
+                    if (!record.TryGetValue("rolename", out var roleName) || string.IsNullOrEmpty(roleName))
+                        continue;
 
                     if (!await _roleManager.RoleExistsAsync(roleName))
                     {
@@ -201,5 +215,6 @@ namespace Infrastructure.CSVManager
                 }
             }
         }
+
     }
 }

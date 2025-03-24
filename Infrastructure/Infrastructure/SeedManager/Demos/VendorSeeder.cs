@@ -83,6 +83,48 @@ public class VendorSeeder
         await _unitOfWork.SaveAsync();
     }
 
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var groups = (await _groupRepository.GetQuery().ToListAsync()).Select(x => x.Id).ToArray();
+        var categories = (await _categoryRepository.GetQuery().ToListAsync()).Select(x => x.Id).ToArray();
+        var cities = new string[] { "New York", "Los Angeles", "San Francisco", "Chicago" };
+        var streets = new string[] { "Main Street", "Broadway", "Elm Street", "Maple Avenue" };
+        var states = new string[] { "NY", "CA", "IL", "TX" };
+        var zipCodes = new string[] { "10001", "90001", "60601", "73301" };
+        var phoneNumbers = new string[] { "123-456-7890", "987-654-3210", "555-123-4567", "111-222-3333" };
+        var emails = new string[] { "vendor1@example.com", "vendor2@example.com", "vendor3@example.com", "vendor4@example.com" };
+
+        var random = new Random();
+
+        var vendors = new List<Vendor>();
+
+        for (int i = 1; i <= number; i++)
+        {
+            var vendor = new Vendor
+            {
+                Name = $"Vendor {i}",
+                Number = _numberSequenceService.GenerateNumber(nameof(Vendor), "", "VND"),
+                VendorGroupId = GetRandomValue(groups, random),
+                VendorCategoryId = GetRandomValue(categories, random),
+                City = GetRandomString(cities, random),
+                Street = GetRandomString(streets, random),
+                State = GetRandomString(states, random),
+                ZipCode = GetRandomString(zipCodes, random),
+                PhoneNumber = GetRandomString(phoneNumbers, random),
+                EmailAddress = GetRandomString(emails, random)
+            };
+
+            vendors.Add(vendor);
+        }
+
+        foreach (var vendor in vendors)
+        {
+            await _vendorRepository.CreateAsync(vendor);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
     private static T GetRandomValue<T>(T[] array, Random random)
     {
         return array[random.Next(array.Length)];
@@ -92,4 +134,5 @@ public class VendorSeeder
     {
         return array[random.Next(array.Length)];
     }
+
 }

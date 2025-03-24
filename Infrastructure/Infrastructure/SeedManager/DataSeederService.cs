@@ -48,29 +48,29 @@ namespace Infrastructure.SeedManager
             {
                 _logger.LogInformation("Génération des données de démonstration...");
 
-                await serviceProvider.GetRequiredService<TaxSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<UserSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<CustomerCategorySeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<CustomerGroupSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<CustomerSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<CustomerContactSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<VendorCategorySeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<VendorGroupSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<VendorSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<VendorContactSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<UnitMeasureSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<ProductGroupSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<ProductSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<SalesOrderSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<PurchaseOrderSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<SalesTeamSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<SalesRepresentativeSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<CampaignSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<BudgetSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<ExpenseSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<LeadSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<LeadContactSeeder>().GenerateDataAsync();
-                await serviceProvider.GetRequiredService<LeadActivitySeeder>().GenerateDataAsync();
+                await serviceProvider.GetRequiredService<TaxSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<UserSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<CustomerCategorySeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<CustomerGroupSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<CustomerSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<CustomerContactSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<VendorCategorySeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<VendorGroupSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<VendorSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<VendorContactSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<UnitMeasureSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<ProductGroupSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<ProductSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<SalesOrderSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<PurchaseOrderSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<SalesTeamSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<SalesRepresentativeSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<CampaignSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<BudgetSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<ExpenseSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<LeadSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<LeadContactSeeder>().GenerateRandomDataAsync(1);
+                await serviceProvider.GetRequiredService<LeadActivitySeeder>().GenerateRandomDataAsync(1);
 
                 _logger.LogInformation("Données de démonstration générées avec succès.");
             }

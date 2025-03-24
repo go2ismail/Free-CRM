@@ -141,19 +141,19 @@ public static class DI
 
             var campaignSeeder = serviceProvider.GetRequiredService<CampaignSeeder>();
             campaignSeeder.GenerateDataAsync().Wait();
-
+            
             var budgetSeeder = serviceProvider.GetRequiredService<BudgetSeeder>();
             budgetSeeder.GenerateDataAsync().Wait();
-
+            
             var expenseSeeder = serviceProvider.GetRequiredService<ExpenseSeeder>();
             expenseSeeder.GenerateDataAsync().Wait();
-
+            
             var leadSeeder = serviceProvider.GetRequiredService<LeadSeeder>();
             leadSeeder.GenerateDataAsync().Wait();
-
+            
             var leadContactSeeder = serviceProvider.GetRequiredService<LeadContactSeeder>();
             leadContactSeeder.GenerateDataAsync().Wait();
-
+            
             var leadActivitySeeder = serviceProvider.GetRequiredService<LeadActivitySeeder>();
             leadActivitySeeder.GenerateDataAsync().Wait();
 

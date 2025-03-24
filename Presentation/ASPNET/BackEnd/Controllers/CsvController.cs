@@ -62,17 +62,23 @@ namespace ASPNET.BackEnd.Controllers
                     await file.CopyToAsync(stream);
                 }
 
-                var mappings = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, string>>(columnMappings);
-
                 var request = new ImportCsvRequest
                 {
                     FilePath = tempFilePath,
                     EntityName = entityName,
                     Separator = separator,
-                    ColumnMappings = mappings
                 };
 
                 var response = await _sender.Send(request, cancellationToken);
+
+                if (response.Message.StartsWith("Error", StringComparison.OrdinalIgnoreCase))
+                {
+                    return StatusCode(StatusCodes.Status400BadRequest, new ApiErrorResult
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Message = response.Message
+                    });
+                }
 
                 return Ok(new ApiSuccessResult<ImportCsvResult>
                 {
@@ -86,10 +92,54 @@ namespace ASPNET.BackEnd.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, new ApiErrorResult
                 {
                     Code = StatusCodes.Status500InternalServerError,
-                    Message = $"Error while importing the CSV : {ex.Message}"
+                    Message = $"Error while importing the CSV: {ex.Message}"
+                });
+            }
+        }
+
+
+        [AllowAnonymous]
+        [HttpGet("Export")]
+        public async Task<ActionResult<ApiSuccessResult<ExportCsvResult>>> ExportCsvAsync(
+            [FromHeader] string entityName,
+            [FromHeader] string filePath,
+            [FromHeader] string separator = ",",
+            CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var request = new ExportCsvRequest
+                {
+                    EntityName = entityName,
+                    Separator = separator
+                };
+
+                var response = await _sender.Send(request, cancellationToken);
+
+                if (response.Message.StartsWith("Error", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest(new ApiErrorResult
+                    {
+                        Code = StatusCodes.Status400BadRequest,
+                        Message = response.Message
+                    });
+                }
+ 
+                return Ok(new ApiSuccessResult<ExportCsvResult>
+                {
+                    Code = StatusCodes.Status200OK,
+                    Message = "Export Successful",
+                    Content = response
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new ApiErrorResult
+                {
+                    Code = StatusCodes.Status500InternalServerError,
+                    Message = $"Error while exporting the CSV: {ex.Message}"
                 });
             }
         }
     }
 }
- 

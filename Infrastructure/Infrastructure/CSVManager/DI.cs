@@ -10,6 +10,7 @@ namespace Infrastructure.CSVManager
         {
             services.Configure<CSVSettings>(configuration.GetSection("CSVSettings"));
             services.AddTransient<ICsvImportService, CsvImportService>();
+            services.AddTransient<ICsvExportService, CsvExportService>();
             services.AddTransient<IEntityMetadataService, EntityMetadataService>();
 
             return services;

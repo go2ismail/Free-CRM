@@ -88,12 +88,11 @@ public class CustomerSeeder
         return array[random.Next(array.Length)];
     }
     
-    public async Task GenerateRandomDataAsync()
+    public async Task GenerateRandomDataAsync(int numberOfCustomers)
     {
         var groups = (await _groupRepository.GetQuery().ToListAsync()).Select(x => x.Id).ToArray();
         var categories = (await _categoryRepository.GetQuery().ToListAsync()).Select(x => x.Id).ToArray();
         var random = new Random();
-        int numberOfCustomers = random.Next(5, 15);
 
         var customers = new List<Customer>();
 

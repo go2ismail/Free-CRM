@@ -35,4 +35,26 @@ public class VendorGroupSeeder
 
         await _unitOfWork.SaveAsync();
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var random = new Random();
+        var vendorGroups = new List<VendorGroup>();
+
+        for (int i = 1; i <= number; i++)
+        {
+            vendorGroups.Add(new VendorGroup
+            {
+                Name = $"VendorGroup {i}"
+            });
+        }
+
+        foreach (var group in vendorGroups)
+        {
+            await _groupRepository.CreateAsync(group);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
 }

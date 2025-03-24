@@ -32,7 +32,6 @@ public class CampaignSeeder
         var dateFinish = DateTime.Now;
         var dateStart = new DateTime(dateFinish.AddMonths(-11).Year, dateFinish.AddMonths(-11).Month, 1);
 
-        // Get all SalesTeam IDs
         var salesTeamIds = await _salesTeamRepository.GetQuery()
             .Select(st => st.Id)
             .ToListAsync();
@@ -49,6 +48,7 @@ public class CampaignSeeder
                 var status = GetRandomStatus(random);
                 string number = _numberSequenceService.GenerateNumber(nameof(Campaign), "", "CMP");
                 string firstFourChars = number.Length >= 4 ? number.Substring(0, 4) : number;
+
                 var campaign = new Campaign
                 {
                     Number = number,
@@ -68,9 +68,53 @@ public class CampaignSeeder
         await _unitOfWork.SaveAsync();
     }
 
+    public async Task GenerateRandomDataAsync(int numberOfCampaigns)
+    {
+        var random = new Random();
+        var salesTeamIds = await _salesTeamRepository.GetQuery()
+            .Select(st => st.Id)
+            .ToListAsync();
+
+        var campaigns = new List<Campaign>();
+
+        for (int i = 0; i < numberOfCampaigns; i++)
+        {
+            var campaignStart = GetRandomDate(random);
+            var duration = random.Next(1, 4);
+            var campaignEnd = campaignStart.AddMonths(duration);
+            var status = GetRandomStatus(random);
+            string number = _numberSequenceService.GenerateNumber(nameof(Campaign), "", "CMP");
+
+            var campaign = new Campaign
+            {
+                Number = number,
+                Title = $"Random Campaign {i + 1}",
+                Description = $"Automatically generated campaign {i + 1}",
+                TargetRevenueAmount = 10000 * Math.Ceiling((random.NextDouble() * 89) + 1),
+                CampaignDateStart = campaignStart,
+                CampaignDateFinish = campaignEnd,
+                Status = status,
+                SalesTeamId = GetRandomValue(salesTeamIds, random)
+            };
+
+            campaigns.Add(campaign);
+        }
+
+        foreach (var campaign in campaigns)
+        {
+            await _campaignRepository.CreateAsync(campaign);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
     private CampaignStatus GetRandomStatus(Random random)
     {
-        var statuses = new[] { CampaignStatus.Draft, CampaignStatus.Cancelled, CampaignStatus.Confirmed, CampaignStatus.OnProgress, CampaignStatus.OnHold, CampaignStatus.Finished, CampaignStatus.Archived };
+        var statuses = new[]
+        {
+            CampaignStatus.Draft, CampaignStatus.Cancelled, CampaignStatus.Confirmed, 
+            CampaignStatus.OnProgress, CampaignStatus.OnHold, CampaignStatus.Finished, CampaignStatus.Archived
+        };
         var weights = new[] { 1, 1, 4, 2, 1, 1, 1 };
 
         int totalWeight = weights.Sum();
@@ -93,13 +137,20 @@ public class CampaignSeeder
         return list[random.Next(list.Count)];
     }
 
+    private static DateTime GetRandomDate(Random random)
+    {
+        var start = DateTime.Now.AddMonths(-12);
+        var range = (DateTime.Now - start).Days;
+        return start.AddDays(random.Next(range));
+    }
+
     private static DateTime[] GetRandomDays(int year, int month, int count)
     {
         var random = new Random();
         var daysInMonth = Enumerable.Range(1, DateTime.DaysInMonth(year, month)).ToList();
-        var selectedDays = new List<int>();
+        var selectedDays = new HashSet<int>();
 
-        for (int i = 0; i < count; i++)
+        while (selectedDays.Count < count && daysInMonth.Count > 0)
         {
             int day = daysInMonth[random.Next(daysInMonth.Count)];
             selectedDays.Add(day);

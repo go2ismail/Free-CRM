@@ -88,6 +88,50 @@ public class PurchaseOrderSeeder
             }
         }
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var random = new Random();
+        var vendors = await _vendorRepository.GetQuery().Select(x => x.Id).ToListAsync();
+        var taxes = await _taxRepository.GetQuery().Select(x => x.Id).ToListAsync();
+        var products = await _productRepository.GetQuery().ToListAsync();
+
+        for (int i = 0; i < number; i++)
+        {
+            var transactionDate = DateTime.Now.AddDays(random.Next(-365, 0)); // Random date in the past year
+
+            var purchaseOrder = new PurchaseOrder
+            {
+                Number = _numberSequenceService.GenerateNumber(nameof(PurchaseOrder), "", "PO"),
+                OrderDate = transactionDate,
+                OrderStatus = (PurchaseOrderStatus)random.Next(0, Enum.GetNames(typeof(PurchaseOrderStatus)).Length),
+                VendorId = GetRandomValue(vendors, random),
+                TaxId = GetRandomValue(taxes, random),
+            };
+            await _purchaseOrderRepository.CreateAsync(purchaseOrder);
+
+            int numberOfProducts = random.Next(3, 6);
+            for (int j = 0; j < numberOfProducts; j++)
+            {
+                var product = products[random.Next(products.Count)];
+                var quantity = random.Next(20, 50);
+                var purchaseOrderItem = new PurchaseOrderItem
+                {
+                    PurchaseOrderId = purchaseOrder.Id,
+                    ProductId = product.Id,
+                    Summary = product.Number,
+                    UnitPrice = product.UnitPrice,
+                    Quantity = quantity,
+                    Total = product.UnitPrice * quantity
+                };
+                await _purchaseOrderItemRepository.CreateAsync(purchaseOrderItem);
+            }
+
+            await _unitOfWork.SaveAsync();
+            _purchaseOrderService.Recalculate(purchaseOrder.Id);
+        }
+    }
+
 
     private static T GetRandomValue<T>(List<T> list, Random random)
     {

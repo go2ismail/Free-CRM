@@ -35,4 +35,25 @@ public class UnitMeasureSeeder
 
         await _unitOfWork.SaveAsync();
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var unitMeasures = new List<UnitMeasure>();
+
+        for (int i = 1; i <= number; i++)
+        {
+            unitMeasures.Add(new UnitMeasure
+            {
+                Name = $"UnitMeasure {i}"
+            });
+        }
+
+        foreach (var unitMeasure in unitMeasures)
+        {
+            await _unitMeasureRepository.CreateAsync(unitMeasure);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
 }

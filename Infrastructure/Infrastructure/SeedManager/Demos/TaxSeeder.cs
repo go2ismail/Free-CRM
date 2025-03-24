@@ -34,5 +34,30 @@ public class TaxSeeder
 
         await _unitOfWork.SaveAsync();
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var random = new Random();
+        var taxes = new List<Tax>();
+
+        for (int i = 0; i < number; i++)
+        {
+            var tax = new Tax
+            {
+                Name = $"T{random.Next(5, 30)}", // Génère un nom de type "T10", "T15", etc.
+                Percentage = random.NextDouble() * (30.0 - 5.0) + 5.0 // Génère un pourcentage entre 5% et 30%
+            };
+
+            taxes.Add(tax);
+        }
+
+        foreach (var tax in taxes)
+        {
+            await _repository.CreateAsync(tax);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
 }
 

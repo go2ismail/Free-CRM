@@ -35,7 +35,10 @@ public class ExpenseSeeder
             .Where(c => c.Status == CampaignStatus.Confirmed)
             .Select(c => c.Id)
             .ToListAsync();
-
+        if (confirmedCampaigns.Count == 0)
+        {
+            return;
+        }
         for (DateTime date = dateStart; date <= dateFinish; date = date.AddMonths(1))
         {
             DateTime[] expenseDates = GetRandomDays(date.Year, date.Month, 5);
@@ -61,10 +64,9 @@ public class ExpenseSeeder
         await _unitOfWork.SaveAsync();
     }
 
-    public async Task GenerateRandomDataAsync()
+    public async Task GenerateRandomDataAsync(int numberOfExpenses)
     {
         var random = new Random();
-        int numberOfExpenses = random.Next(2, 6);
         var confirmedCampaigns = await _campaignRepository.GetQuery()
             .Where(c => c.Status == CampaignStatus.Confirmed)
             .Select(c => c.Id)

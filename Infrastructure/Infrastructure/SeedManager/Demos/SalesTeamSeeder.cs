@@ -40,4 +40,27 @@ public class SalesTeamSeeder
 
         await _unitOfWork.SaveAsync();
     }
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var salesTeams = new List<SalesTeam>();
+
+        for (int i = 0; i < number; i++)
+        {
+            var salesTeam = new SalesTeam
+            {
+                Name = $"Sales Team {i + 1}"
+            };
+
+            salesTeams.Add(salesTeam);
+        }
+
+        foreach (var salesTeam in salesTeams)
+        {
+            await _repository.CreateAsync(salesTeam);
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
 }

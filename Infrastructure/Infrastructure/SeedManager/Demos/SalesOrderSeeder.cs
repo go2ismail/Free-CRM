@@ -89,6 +89,51 @@ public class SalesOrderSeeder
         }
 
     }
+    
+    
+    public async Task GenerateRandomDataAsync(int number)
+    {
+        var random = new Random();
+        var customers = await _customerRepository.GetQuery().Select(x => x.Id).ToListAsync();
+        var taxes = await _taxRepository.GetQuery().Select(x => x.Id).ToListAsync();
+        var products = await _productRepository.GetQuery().ToListAsync();
+
+        for (int i = 0; i < number; i++)
+        {
+            var transactionDate = DateTime.Now.AddDays(random.Next(-365, 0)); // Random date in the past year
+
+            var salesOrder = new SalesOrder
+            {
+                Number = _numberSequenceService.GenerateNumber(nameof(SalesOrder), "", "SO"),
+                OrderDate = transactionDate,
+                OrderStatus = (SalesOrderStatus)random.Next(0, Enum.GetNames(typeof(SalesOrderStatus)).Length),
+                CustomerId = GetRandomValue(customers, random),
+                TaxId = GetRandomValue(taxes, random),
+            };
+            await _salesOrderRepository.CreateAsync(salesOrder);
+
+            int numberOfProducts = random.Next(3, 6);
+            for (int j = 0; j < numberOfProducts; j++)
+            {
+                var qty = random.Next(2, 5);
+                var product = products[random.Next(products.Count)];
+                var salesOrderItem = new SalesOrderItem
+                {
+                    SalesOrderId = salesOrder.Id,
+                    ProductId = product.Id,
+                    Summary = product.Number,
+                    UnitPrice = product.UnitPrice,
+                    Quantity = qty,
+                    Total = product.UnitPrice * qty
+                };
+                await _salesOrderItemRepository.CreateAsync(salesOrderItem);
+            }
+
+            await _unitOfWork.SaveAsync();
+            _salesOrderService.Recalculate(salesOrder.Id);
+        }
+    }
+
 
     private static T GetRandomValue<T>(List<T> list, Random random)
     {

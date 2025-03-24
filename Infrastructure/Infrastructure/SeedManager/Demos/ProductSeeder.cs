@@ -43,37 +43,30 @@ namespace Infrastructure.SeedManager.Demos
                 }
             }
 
-
             var products = new List<Product>
             {
-                // Hardware
                 new Product { Name = "Dell Servers", UnitPrice = 5000.0, ProductGroupId = groupMapping["Hardware"] },
                 new Product { Name = "Dell Desktop Computers", UnitPrice = 2000.0, ProductGroupId = groupMapping["Hardware"] },
                 new Product { Name = "Dell Laptops", UnitPrice = 3000.0, ProductGroupId = groupMapping["Hardware"] },
 
-                // Networking
                 new Product { Name = "Network Cables", UnitPrice = 100.0, ProductGroupId = groupMapping["Networking"] },
                 new Product { Name = "Routers and Switches", UnitPrice = 1000.0, ProductGroupId = groupMapping["Networking"] },
                 new Product { Name = "Antennas and Signal Boosters", UnitPrice = 2000.0, ProductGroupId = groupMapping["Networking"] },
                 new Product { Name = "Wifii", UnitPrice = 1000.0, ProductGroupId = groupMapping["Networking"] },
 
-                // Storage
                 new Product { Name = "HDD 500", UnitPrice = 500.0, ProductGroupId = groupMapping["Storage"] },
                 new Product { Name = "HDD 1T", UnitPrice = 800.0, ProductGroupId = groupMapping["Storage"] },
                 new Product { Name = "SSD 500", UnitPrice = 1000.0, ProductGroupId = groupMapping["Storage"] },
                 new Product { Name = "SSD 1T", UnitPrice = 1500.0, ProductGroupId = groupMapping["Storage"] },
 
-                // Device
                 new Product { Name = "Dell Keyboard", UnitPrice = 700.0, ProductGroupId = groupMapping["Device"] },
                 new Product { Name = "Dell Mouse", UnitPrice = 500.0, ProductGroupId = groupMapping["Device"] },
                 new Product { Name = "Dell Monitor 27inch", UnitPrice = 1000.0, ProductGroupId = groupMapping["Device"] },
                 new Product { Name = "Dell Monitor 32inch", UnitPrice = 1500.0, ProductGroupId = groupMapping["Device"] },
                 new Product { Name = "Dell Webcams", UnitPrice = 500.0, ProductGroupId = groupMapping["Device"] },
 
-                // Software
                 new Product { Name = "D365 License", UnitPrice = 800.0, Physical = false, ProductGroupId = groupMapping["Software"] },
 
-                // Service
                 new Product { Name = "IT Security", UnitPrice = 500.0, Physical = false, ProductGroupId = groupMapping["Service"] },
                 new Product { Name = "Discount", UnitPrice = -1, Physical = false, ProductGroupId = groupMapping["Service"] }
             };
@@ -83,6 +76,35 @@ namespace Infrastructure.SeedManager.Demos
                 product.Number = _numberSequenceService.GenerateNumber(nameof(Product), "", "ART");
                 product.UnitMeasureId = measures[0];
                 product.Physical ??= true;
+
+                await _productRepository.CreateAsync(product);
+            }
+
+            await _unitOfWork.SaveAsync();
+        }
+
+        public async Task GenerateRandomDataAsync(int number)
+        {
+            var productGroups = await _productGroupRepository.GetQuery().ToListAsync();
+            var measures = (await _unitMeasureRepository.GetQuery().ToListAsync());
+
+            var random = new Random();
+
+            for (int i = 1; i <= number; i++)
+            {
+                var productName = $"Product {i}";
+                var productGroupId = GetRandomValue(productGroups.Select(x => x.Id).ToArray(), random);
+                var unitMeasureId = GetRandomValue(measures.Select(x => x.Id).ToArray(), random);
+                var product = new Product
+                {
+                    Name = productName,
+                    UnitPrice = random.Next(100, 10000), // Random price between 100 and 10000
+                    ProductGroupId = productGroupId,
+                    UnitMeasureId = unitMeasureId,
+                    Physical = random.Next(0, 2) == 1 // Randomly set Physical (true/false)
+                };
+
+                product.Number = _numberSequenceService.GenerateNumber(nameof(Product), "", "ART");
 
                 await _productRepository.CreateAsync(product);
             }

@@ -32,27 +32,24 @@ public class BudgetSeeder
         var dateFinish = DateTime.Now;
         var dateStart = new DateTime(dateFinish.AddMonths(-11).Year, dateFinish.AddMonths(-11).Month, 1);
 
-        var confirmedCampaigns = new List<string>(await _campaignRepository.GetQuery()
+        var confirmedCampaigns = await _campaignRepository.GetQuery()
             .Where(c => c.Status == CampaignStatus.Confirmed)
             .Select(c => c.Id)
-            .ToListAsync());
+            .ToListAsync();
 
         for (DateTime date = dateStart; date < dateFinish; date = date.AddMonths(1))
         {
             DateTime[] transactionDates = GetRandomDays(date.Year, date.Month, 10);
 
-            foreach (var campaignId in confirmedCampaigns.ToList())
+            foreach (var campaignId in confirmedCampaigns)
             {
                 int numberOfBudgets = random.Next(2, 6);
 
                 for (int i = 0; i < numberOfBudgets; i++)
                 {
-                    if (transactionDates.Length == 0)
-                    {
-                        break;
-                    }
+                    if (transactionDates.Length == 0) break;
 
-                    var transDate = GetRandomAndRemove(transactionDates, random);
+                    var transDate = GetRandomAndRemove(ref transactionDates, random);
                     var status = GetRandomStatus(random);
 
                     var budget = new Budget
@@ -69,6 +66,45 @@ public class BudgetSeeder
                     await _budgetRepository.CreateAsync(budget);
                 }
             }
+        }
+
+        await _unitOfWork.SaveAsync();
+    }
+
+    public async Task GenerateRandomDataAsync(int numberOfBudgets)
+    {
+        var random = new Random();
+        var confirmedCampaigns = await _campaignRepository.GetQuery()
+            .Where(c => c.Status == CampaignStatus.Confirmed)
+            .Select(c => c.Id)
+            .ToListAsync();
+        if (confirmedCampaigns.Count == 0)
+        {
+            return;
+        }
+        var budgets = new List<Budget>();
+
+        for (int i = 0; i < numberOfBudgets; i++)
+        {
+            var budgetDate = GetRandomDate(random);
+            var status = GetRandomStatus(random);
+            var budget = new Budget
+            {
+                Number = _numberSequenceService.GenerateNumber(nameof(Budget), "", "BUD"),
+                Title = $"Random Budget {i + 1}",
+                Description = $"Automatically generated budget {i + 1}",
+                BudgetDate = budgetDate,
+                Status = status,
+                Amount = 10000 * Math.Ceiling((random.NextDouble() * 89) + 1),
+                CampaignId = GetRandomValue(confirmedCampaigns, random)
+            };
+
+            budgets.Add(budget);
+        }
+
+        foreach (var budget in budgets)
+        {
+            await _budgetRepository.CreateAsync(budget);
         }
 
         await _unitOfWork.SaveAsync();
@@ -94,14 +130,16 @@ public class BudgetSeeder
         return BudgetStatus.Confirmed;
     }
 
-    private static T GetRandomAndRemove<T>(T[] list, Random random)
+    private static string GetRandomValue(List<string> list, Random random)
     {
-        if (list.Length == 0) return default;
+        return list[random.Next(list.Count)];
+    }
 
-        int index = random.Next(0, list.Length);
-        T value = list[index];
-        list = list.Where((item, idx) => idx != index).ToArray();
-        return value;
+    private static DateTime GetRandomDate(Random random)
+    {
+        var start = DateTime.Now.AddMonths(-12);
+        var range = (DateTime.Now - start).Days;
+        return start.AddDays(random.Next(range));
     }
 
     private static DateTime[] GetRandomDays(int year, int month, int count)
@@ -118,5 +156,15 @@ public class BudgetSeeder
         }
 
         return selectedDays.Select(day => new DateTime(year, month, day)).ToArray();
+    }
+
+    private static T GetRandomAndRemove<T>(ref T[] list, Random random)
+    {
+        if (list.Length == 0) return default;
+
+        int index = random.Next(list.Length);
+        T value = list[index];
+        list = list.Where((item, idx) => idx != index).ToArray();
+        return value;
     }
 }
