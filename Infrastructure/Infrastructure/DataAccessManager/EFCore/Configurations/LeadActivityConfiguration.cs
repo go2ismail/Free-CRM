@@ -11,14 +11,14 @@ public class LeadActivityConfiguration : BaseEntityConfiguration<LeadActivity>
     {
         base.Configure(builder);
 
-        builder.Property(x => x.LeadId).HasMaxLength(IdConsts.MaxLength).IsRequired(false);
+        builder.Property(x => x.LeadId).HasMaxLength(IdConsts.MaxLength).IsRequired(true);
 
-        builder.Property(x => x.Number).HasMaxLength(CodeConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.Summary).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
+        builder.Property(x => x.Number).HasMaxLength(CodeConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.Summary).HasMaxLength(NameConsts.MaxLength).IsRequired(true);
         builder.Property(x => x.Description).HasMaxLength(DescriptionConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.FromDate).IsRequired(false);
-        builder.Property(x => x.ToDate).IsRequired(false);
-        builder.Property(x => x.Type).HasConversion<string>().IsRequired(false);
+        builder.Property(x => x.FromDate).IsRequired(true);
+        builder.Property(x => x.ToDate).IsRequired(true);
+        builder.Property(x => x.Type).HasConversion<string>().IsRequired(true);
         builder.Property(x => x.AttachmentName).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
 
         builder.HasIndex(e => e.Number);

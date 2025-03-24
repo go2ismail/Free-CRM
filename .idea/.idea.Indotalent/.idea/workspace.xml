@@ -12,6 +12,19 @@
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Indotalent/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Indotalent/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/BudgetConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/BudgetConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CampaignConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CampaignConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CompanyConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CompanyConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerCategoryConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerCategoryConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerContactConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerContactConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerGroupConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CustomerGroupConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/ExpenseConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/ExpenseConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/FileDocumentConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/FileDocumentConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/FileImageConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/FileImageConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadActivityConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadActivityConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadContactConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadContactConfiguration.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.dll" afterDir="false" />
@@ -19,10 +32,13 @@
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.endpoints.json" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.endpoints.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.runtime.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Campaign_20250323132533.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Campaign_20250323132533.csv" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -133,7 +149,7 @@
       <workItem from="1742526158880" duration="28277000" />
       <workItem from="1742564734325" duration="10717000" />
       <workItem from="1742578005107" duration="77172000" />
-      <workItem from="1742789983273" duration="22047000" />
+      <workItem from="1742789983273" duration="34210000" />
     </task>
     <servers />
   </component>

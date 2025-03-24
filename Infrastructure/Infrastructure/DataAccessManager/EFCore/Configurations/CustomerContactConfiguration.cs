@@ -11,13 +11,13 @@ public class CustomerContactConfiguration : BaseEntityConfiguration<CustomerCont
     {
         base.Configure(builder);
 
-        builder.Property(x => x.Name).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.Number).HasMaxLength(CodeConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.JobTitle).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.PhoneNumber).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.EmailAddress).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
+        builder.Property(x => x.Name).HasMaxLength(NameConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.Number).HasMaxLength(CodeConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.JobTitle).HasMaxLength(NameConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.PhoneNumber).HasMaxLength(NameConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.EmailAddress).HasMaxLength(NameConsts.MaxLength).IsRequired(true);
         builder.Property(x => x.Description).HasMaxLength(DescriptionConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.CustomerId).HasMaxLength(IdConsts.MaxLength).IsRequired(false);
+        builder.Property(x => x.CustomerId).HasMaxLength(IdConsts.MaxLength).IsRequired(true);
 
         builder.HasIndex(e => e.Name);
         builder.HasIndex(e => e.Number);
