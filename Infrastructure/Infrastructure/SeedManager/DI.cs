@@ -70,6 +70,7 @@ public static class DI
         services.AddScoped<SalesRepresentativeSeeder>();
         services.AddScoped<CampaignSeeder>();
         services.AddScoped<BudgetSeeder>();
+        services.AddScoped<RateSeeder>();
         services.AddScoped<ExpenseSeeder>();
         services.AddScoped<LeadSeeder>();
         services.AddScoped<LeadContactSeeder>();
@@ -139,6 +140,9 @@ public static class DI
 
             var campaignSeeder = serviceProvider.GetRequiredService<CampaignSeeder>();
             campaignSeeder.GenerateDataAsync().Wait();
+            
+            var rateSeeder = serviceProvider.GetRequiredService<RateSeeder>();
+            rateSeeder.GenerateDataAsync().Wait();
 
             var budgetSeeder = serviceProvider.GetRequiredService<BudgetSeeder>();
             budgetSeeder.GenerateDataAsync().Wait();

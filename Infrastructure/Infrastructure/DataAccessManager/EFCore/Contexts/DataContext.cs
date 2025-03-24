@@ -43,6 +43,7 @@ public class DataContext : IdentityDbContext<ApplicationUser>, IEntityDbSet
 
 
     public DbSet<Campaign> Campaign { get; set; }
+    public DbSet<Rate> Rate { get; set; }
     public DbSet<Budget> Budget { get; set; }
     public DbSet<Expense> Expense { get; set; }
     public DbSet<Lead> Lead { get; set; }
@@ -83,6 +84,7 @@ public class DataContext : IdentityDbContext<ApplicationUser>, IEntityDbSet
 
 
         modelBuilder.ApplyConfiguration(new BudgetConfiguration());
+        modelBuilder.ApplyConfiguration(new RateConfiguration());
         modelBuilder.ApplyConfiguration(new CampaignConfiguration());
         modelBuilder.ApplyConfiguration(new ExpenseConfiguration());
         modelBuilder.ApplyConfiguration(new LeadConfiguration());

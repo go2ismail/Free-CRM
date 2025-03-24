@@ -16,17 +16,41 @@ public class ExpenseController : BaseApiController
     }
 
     [Authorize]
+    [HttpPost("CreateExpense2")]
+    public async Task<ActionResult<ApiSuccessResult<CreateExpense2Result>>> CreateExpense2Async(CreateExpense2Request request, CancellationToken cancellationToken)
+    {
+        var response = await _sender.Send(request, cancellationToken);
+        if (!string.IsNullOrEmpty(response.Message))
+        {
+            return Ok(new ApiSuccessResult<CreateExpense2Result>
+            {
+                Code = StatusCodes.Status204NoContent,
+                Message = $"Failed executing {nameof(CreateExpense2Async)}",
+                Content = response
+            });
+        } else
+        {
+            return Ok(new ApiSuccessResult<CreateExpense2Result>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(CreateExpenseAsync)}",
+                Content = response
+            });
+        }
+    }
+    
+    [Authorize]
     [HttpPost("CreateExpense")]
     public async Task<ActionResult<ApiSuccessResult<CreateExpenseResult>>> CreateExpenseAsync(CreateExpenseRequest request, CancellationToken cancellationToken)
     {
         var response = await _sender.Send(request, cancellationToken);
-
         return Ok(new ApiSuccessResult<CreateExpenseResult>
         {
             Code = StatusCodes.Status200OK,
             Message = $"Success executing {nameof(CreateExpenseAsync)}",
             Content = response
         });
+        
     }
 
     [Authorize]

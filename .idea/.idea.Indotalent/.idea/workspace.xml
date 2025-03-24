@@ -10,15 +10,24 @@
   <component name="ChangeListManager">
     <list default="true" id="d4788bc4-904c-4863-8007-376b30c56024" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Indotalent/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Indotalent/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/Common/Repositories/IEntityDbSet.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/Common/Repositories/IEntityDbSet.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/Features/ExpenseManager/Commands/CreateExpense.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/Features/ExpenseManager/Commands/CreateExpense.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Contexts/DataContext.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Contexts/DataContext.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/SeedManager/DI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/SeedManager/DI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/DashboardController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/DashboardController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/TableController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/TableController.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Profiles/MyProfile.cshtml.js" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Profiles/MyProfile.cshtml.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/ExpenseController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/ExpenseController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Expenses/ExpenseList.cshtml.js" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Expenses/ExpenseList.cshtml.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.pdb" afterDir="false" />
@@ -26,6 +35,8 @@
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.runtime.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.pdb" afterDir="false" />
     </list>
@@ -137,7 +148,8 @@
       <workItem from="1742468664280" duration="18251000" />
       <workItem from="1742526158880" duration="28277000" />
       <workItem from="1742564734325" duration="10717000" />
-      <workItem from="1742578005107" duration="71024000" />
+      <workItem from="1742578005107" duration="77172000" />
+      <workItem from="1742789983273" duration="7711000" />
     </task>
     <servers />
   </component>
@@ -158,5 +170,24 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="DotNet Breakpoints">
+          <url>file://$PROJECT_DIR$/Core/Application/Features/DashboardManager/Queries/GetCampaignDashboard.cs</url>
+          <line>98</line>
+          <properties documentPath="E:\IT University\Codes\S6\INF312-Web design\Free-CRM\Core\Application\Features\DashboardManager\Queries\GetCampaignDashboard.cs" initialLine="98" containingFunctionPresentation="Lambda expression inside Method 'Handle'">
+            <startOffsets>
+              <option value="3314" />
+            </startOffsets>
+            <endOffsets>
+              <option value="3338" />
+            </endOffsets>
+          </properties>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
