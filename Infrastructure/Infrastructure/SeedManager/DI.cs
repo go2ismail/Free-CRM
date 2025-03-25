@@ -42,6 +42,9 @@ public static class DI
             var configSeeder = serviceProvider.GetRequiredService<ConfigSeeder>();
             configSeeder.GenerateDataAsync().Wait();
 
+            var salesTeamSeeder = serviceProvider.GetRequiredService<SalesTeamSeeder>();
+            salesTeamSeeder.GenerateDataAsync().Wait(); 
+
         }
 
         return host;

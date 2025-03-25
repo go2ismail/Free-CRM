@@ -130,7 +130,7 @@ public class AnalyseExpense
         var budgetBeforDate = confirmedBudget.Where(b => b.BudgetDate <= date);
 
         // Calculate the total budget
-        double totalBudget = budgets.Sum(b => b.Amount ?? 0);
+        double totalBudget = budgetBeforDate.Sum(b => b.Amount ?? 0);
 
         // Calculate the total confirmed expenses
         double totalExpenses = confirmedExpenses.Sum(e => e.Amount ?? 0) + amount;

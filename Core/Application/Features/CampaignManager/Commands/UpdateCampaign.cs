@@ -34,7 +34,7 @@ public class UpdateCampaignValidator : AbstractValidator<UpdateCampaignRequest>
         RuleFor(x => x.CampaignDateStart).NotEmpty();
         RuleFor(x => x.CampaignDateFinish).NotEmpty();
         RuleFor(x => x.Status).NotEmpty();
-        RuleFor(x => x.Status).NotEmpty();
+        RuleFor(x => x.TargetRevenueAmount).NotEmpty().GreaterThan(0);
     }
 }
 

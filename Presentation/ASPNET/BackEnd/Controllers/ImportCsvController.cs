@@ -1,80 +1,154 @@
-﻿using Application.Features.FileDocumentManager.Commands;
+﻿using Application.Features.ExpenseManager.Commands;
+using Application.Features.FileDocumentManager.Commands;
 using Application.Features.FileDocumentManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
+using Infrastructure.DataAccessManager.EFCore.Contexts;
 using Infrastructure.FileDocumentManager;
 using Infrastructure.Utils;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Runtime.Serialization;
+
 
 namespace ASPNET.BackEnd.Controllers
 {
     [Route("api/[controller]")]
     public class ImportCsvController : BaseApiController
     {
-        public ImportCsvController(ISender sender) : base(sender)
+        DataContext _context;
+        ImportService _importService;
+        public ImportCsvController(ISender sender, DataContext dataContext, ImportService importService) : base(sender)
         {
+            _context = dataContext;
+            _importService = importService;
         }
 
         [Authorize]
         [HttpPost("UploadCsv")]
-        public async Task<ActionResult<CreateDocumentResult>> UploadDocumentAsync(IFormFile file, CancellationToken cancellationToken)
+        public async Task<ActionResult<ApiSuccessResult<object>>> UploadDocumentAsync(UploadRequest uploadRequest, CancellationToken cancellationToken)
         {
-            if (file == null || file.Length == 0)
+            IFormFile fileCamp = uploadRequest.fileCamp;
+            IFormFile fileRes = uploadRequest.fileRes;
+
+            if (fileCamp == null || fileCamp.Length == 0 || fileRes == null || fileRes.Length == 0)
             {
                 return BadRequest("Invalid file.");
             }
 
+            Console.WriteLine("separator");
+            Console.WriteLine(uploadRequest.separator);
+            Console.WriteLine(uploadRequest.dateFormat);
+
+            // Process fileCamp
+            byte[] fileDataCamp;
             using (var memoryStream = new MemoryStream())
             {
-                await file.CopyToAsync(memoryStream, cancellationToken);
-                var fileData = memoryStream.ToArray();
-                var extension = Path.GetExtension(file.FileName).TrimStart('.');
+                await fileCamp.CopyToAsync(memoryStream, cancellationToken);
+                fileDataCamp = memoryStream.ToArray();
+            }
 
-                var command = new CreateDocumentRequest
+            var extensionCamp = Path.GetExtension(fileCamp.FileName).TrimStart('.');
+            var commandCamp = new CreateDocumentRequest
+            {
+                OriginalFileName = fileCamp.FileName,
+                Extension = extensionCamp,
+                Data = fileDataCamp,
+                Size = fileDataCamp.Length
+            };
+
+            // Process fileRes
+            byte[] fileDataRes;
+            using (var memoryStream = new MemoryStream())
+            {
+                await fileRes.CopyToAsync(memoryStream, cancellationToken);
+                fileDataRes = memoryStream.ToArray();
+            }
+
+            var extensionRes = Path.GetExtension(fileRes.FileName).TrimStart('.');
+            var commandRes = new CreateDocumentRequest
+            {
+                OriginalFileName = fileRes.FileName,
+                Extension = extensionRes,
+                Data = fileDataRes,
+                Size = fileDataRes.Length
+            };
+
+            if (extensionCamp.ToLower() == "csv" && extensionRes.ToLower() == "csv")
+            {
+                CsvProcessingCampaignResult dataCamp = new CsvProcessingCampaignResult();
+                CsvProcessingResult dataRes = new CsvProcessingResult();
+                try
                 {
-                    OriginalFileName = file.FileName,
-                    Extension = extension,
-                    Data = fileData,
-                    Size = fileData.Length
-                };
-                
-                if (extension.ToLower() == "csv")
-                {
-                    var datav = MethodeFile.ReadCsvFile(command, ";","dd/MM/yyyy HH:mm:ss");
+                    MethodeFile methodeFile = new MethodeFile(_importService);
+                    dataCamp = methodeFile.ReadCsvFileCampaigne(commandCamp, uploadRequest.separator);
+                    
 
-                    var result = await _sender.Send(command, cancellationToken);
+                    dataRes = methodeFile.ReadCsvFile(commandRes, uploadRequest.separator, uploadRequest.dateFormat,dataCamp.SuccessfulRecords);
 
-                    if (result?.DocumentName == null)
+
+
+                    Console.WriteLine("catchcatchcatchcatchcatchcatch tsisy");
+                    if (dataCamp.ErrorRecords.Count > 0)
                     {
-                        return StatusCode(500, "An error occurred while uploading the document.");
+                        return Ok(new ApiSuccessResult<CreateExpenseResult>
+                        {
+                            Code = 407,
+                            Message = dataCamp.GetMessageError(),
+                            Content = null
+                        });
+                    }
+                    else if (dataRes.ErrorRecords.Count > 0)
+                    {
+                        return Ok(new ApiSuccessResult<CreateExpenseResult>
+                        {
+                            Code = 407,
+                            Message = dataRes.GetMessageError(),
+                            Content = null
+                        });
                     }
 
-                    var response = new
-                    {
-                        message = file.FileName,
-                        data = datav
-                    };
+
+                    var (camps,exps,budgets)=methodeFile.saveDataImport(dataCamp.SuccessfulRecords, dataRes.SuccessfulRecords, _context);
 
                     return Ok(new ApiSuccessResult<object>
                     {
                         Code = StatusCodes.Status200OK,
-                        Message = $"{nameof(UploadDocumentAsync)}",
-                        Content = response
+                        Message = $"Les donner enregistrer Campaign({camps.Count}), Budget({budgets.Count}), Expense({exps.Count})",
+                        Content = null
                     });
                 }
-                else
+                catch (Exception e)
                 {
-                    return BadRequest("Invalid file format.");
+                    Console.WriteLine("catchcatchcatchcatchcatchcatch", e.Message);
+                    if (dataCamp.ErrorRecords.Count > 0)
+                    {
+                        return Ok(new ApiSuccessResult<CreateExpenseResult>
+                        {
+                            Code = 407,
+                            Message = dataCamp.GetMessageError(),
+                            Content = null
+                        });
+                    }
+                    else if(dataRes.ErrorRecords.Count > 0)
+                    {
+                        return Ok(new ApiSuccessResult<CreateExpenseResult>
+                        {
+                            Code = 407,
+                            Message = dataRes.GetMessageError(),
+                            Content = null
+                        });
+                    }
+                    else
+                    {
+                        throw new Exception("Error");
+                    }
+
                 }
-
-                
-
-
-
-
+            }
+            else
+            {
+                return BadRequest("Invalid file format.");
             }
         }
 
