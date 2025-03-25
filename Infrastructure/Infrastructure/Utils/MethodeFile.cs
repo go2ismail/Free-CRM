@@ -24,7 +24,6 @@ namespace Infrastructure.Utils
             foreach (var error in ErrorRecords)
             {
                 message += "line: " + error.LineNumber + ";";
-                message += "data: " + error.LineNumber + "; /n";
             }
             return message;
         }
@@ -38,11 +37,10 @@ namespace Infrastructure.Utils
 
         public String GetMessageError()
         {
-            string message = "Error on file " + fileName + "\n";
+            string message = "Error on file " + fileName + "\n\n";
             foreach (var error in ErrorRecords)
             {
                 message += "line: "+error.LineNumber+";";
-                message += "data: "+error.LineNumber + "; \n";
             }
             return message;
         }
