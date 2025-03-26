@@ -36,7 +36,7 @@ public class CSVService : ICSVService
         _serviceProvider = serviceProvider;
     }
 
-    public async Task<Dictionary<string, int>> ImportTablesFromCsvAsync(
+public async Task<Dictionary<string, int>> ImportTablesFromCsvAsync(
         List<string> fileNames, 
         List<byte[]> csvDataList, 
         string createdById,
@@ -44,18 +44,45 @@ public class CSVService : ICSVService
     {
         var importedCounts = new Dictionary<string, int>();
         var errors = new List<string>();
-        IDbContextTransaction transaction = null;
 
+        var motherFiles = new List<(string FileName, byte[] CsvData)>();
+        var childFiles = new List<(string FileName, byte[] CsvData)>();
+
+        // Categorize files
+        for (int i = 0; i < fileNames.Count; i++)
+        {
+            var fileName = fileNames[i];
+            var csvData = csvDataList[i];
+            
+            using var stream = new MemoryStream(csvData);
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+            {
+                MissingFieldFound = null,
+                HeaderValidated = null,
+                IgnoreBlankLines = true,
+                BadDataFound = context => errors.Add($"Bad data found: {context.RawRecord}\n"),
+                Delimiter = ","
+            });
+
+            await csv.ReadAsync();
+            csv.ReadHeader();
+
+            bool isChild = csv.HeaderRecord?.Contains("Type") ?? false;
+            if (isChild)
+                childFiles.Add((fileName, csvData));
+            else
+                motherFiles.Add((fileName, csvData));
+        }
+
+        await using var transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
         try
         {
-            transaction = await _context.Database.BeginTransactionAsync(cancellationToken);
             bool hasErrors = false;
 
-            for (int i = 0; i < fileNames.Count; i++)
+            // Process Mother files first
+            foreach (var (fileName, csvData) in motherFiles)
             {
-                var fileName = fileNames[i];
-                var csvData = csvDataList[i];
-
                 using var stream = new MemoryStream(csvData);
                 using var reader = new StreamReader(stream, Encoding.UTF8);
                 using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -63,10 +90,8 @@ public class CSVService : ICSVService
                     MissingFieldFound = null,
                     HeaderValidated = null,
                     IgnoreBlankLines = true,
-                    BadDataFound = context => Console.WriteLine($"Bad data found: {context.RawRecord}"),
-                    Delimiter = ",", // Spécifiez explicitement le délimiteur
-                    PrepareHeaderForMatch = args => args.Header.Trim(), // Nettoie les en-têtes
-                    TrimOptions = TrimOptions.Trim // Nettoie les valeurs
+                    BadDataFound = context => errors.Add($"Bad data found: {context.RawRecord}\n"),
+                    Delimiter = ","
                 });
 
                 await csv.ReadAsync();
@@ -74,22 +99,15 @@ public class CSVService : ICSVService
 
                 try
                 {
-                    if (IsChildTable(csv))
-                    {
-                        await ProcessChildTableAsync(csv, fileName, importedCounts, errors, createdById, cancellationToken);
-                    }
-                    else
-                    {
-                        await ProcessMotherTableAsync(csv, fileName, importedCounts, errors, createdById, cancellationToken);
-                    }
+                    await ProcessMotherTableAsync(csv, fileName, importedCounts, errors, createdById, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    errors.Add($"Erreur lors du traitement du fichier {fileName}: {ex.Message}");
+                    errors.Add($"Error processing mother file {fileName}: {ex.Message}\n");
                     hasErrors = true;
                     break;
                 }
-
+                
                 if (errors.Count > 0)
                 {
                     hasErrors = true;
@@ -97,39 +115,66 @@ public class CSVService : ICSVService
                 }
             }
 
+            if (!hasErrors)
+            {
+                // Process Child files after all mothers
+                foreach (var (fileName, csvData) in childFiles)
+                {
+                    using var stream = new MemoryStream(csvData);
+                    using var reader = new StreamReader(stream, Encoding.UTF8);
+                    using var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+                    {
+                        MissingFieldFound = null,
+                        HeaderValidated = null,
+                        IgnoreBlankLines = true,
+                        BadDataFound = context => errors.Add($"Bad data found: {context.RawRecord}\n"),
+                        Delimiter = ","
+                    });
+
+                    await csv.ReadAsync();
+                    csv.ReadHeader();
+
+                    try
+                    {
+                        await ProcessChildTableAsync(csv, fileName, importedCounts, errors, createdById, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        errors.Add($"Error processing child file {fileName}: {ex.Message}\n");
+                        hasErrors = true;
+                        break;
+                    }
+                    
+                    if (errors.Count > 0)
+                    {
+                        hasErrors = true;
+                        break;
+                    }
+                }
+            }
+
             if (hasErrors)
             {
-                if (transaction != null)
+                try
                 {
                     await transaction.RollbackAsync(cancellationToken);
-                    transaction = null;
+                }
+                catch (Exception ex)
+                {
+                    errors.Add($"Failed to rollback transaction: {ex.Message}\n");
                 }
                 throw new AggregateException(errors.Select(e => new InvalidOperationException(e)));
             }
 
             await _context.SaveChangesAsync(cancellationToken);
-            
-            if (transaction != null)
-            {
-                await transaction.CommitAsync(cancellationToken);
-            }
+            await transaction.CommitAsync(cancellationToken);
         }
-        catch (Exception)
+        catch (Exception ex) when (ex is not AggregateException)
         {
-            if (transaction != null)
-            {
-                await transaction.RollbackAsync(cancellationToken);
-            }
-            throw;
+            errors.Add(ex.Message);
+            throw new AggregateException(errors.Select(e => new InvalidOperationException(e)));
         }
-        finally
-        {
-            if (transaction != null)
-            {
-                await transaction.DisposeAsync();
-            }
-        }
-
+        
         return importedCounts;
     }
     
@@ -138,7 +183,7 @@ public class CSVService : ICSVService
         return csv.HeaderRecord?.Contains("Type") ?? false;
     }
 
-    private async Task ProcessMotherTableAsync(
+private async Task ProcessMotherTableAsync(
         CsvReader csv, 
         string fileName, 
         Dictionary<string, int> importedCounts, 
@@ -146,19 +191,9 @@ public class CSVService : ICSVService
         string createdById,
         CancellationToken cancellationToken)
     {
-        string tableName;
-        bool simpleFormat = !csv.HeaderRecord[0].Contains('_');
-
-        if (simpleFormat)
-        {
-            tableName = Path.GetFileNameWithoutExtension(fileName)
-                      .Replace(" ", "")
-                      .Replace("-", "");
-        }
-        else
-        {
-            tableName = csv.HeaderRecord[0].Split('_')[0];
-        }
+        string tableName = csv.HeaderRecord[0].Contains('_') 
+            ? csv.HeaderRecord[0].Split('_')[0]
+            : Path.GetFileNameWithoutExtension(fileName).Replace(" ", "").Replace("-", "");
 
         var entityType = GetEntityType(tableName);
         bool hasForeignKeys = HasForeignKeys(entityType);
@@ -172,21 +207,9 @@ public class CSVService : ICSVService
 
                 foreach (var header in csv.HeaderRecord)
                 {
-                    string propName;
-                    if (simpleFormat)
-                    {
-                        propName = header;
-                    }
-                    else
-                    {
-                        var parts = header.Split('_');
-                        if (parts.Length < 2 || parts[0] != tableName)
-                        {
-                            errors.Add($"Fichier {fileName}, ligne {lineNumber}: En-tête invalide '{header}'");
-                            continue;
-                        }
-                        propName = string.Join("_", parts.Skip(1));
-                    }
+                    string propName = header.Contains('_') 
+                        ? string.Join("_", header.Split('_').Skip(1))
+                        : header;
 
                     var prop = entityType.GetProperty(propName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                     if (prop == null)
@@ -205,14 +228,12 @@ public class CSVService : ICSVService
                     await ResolveAndAssignForeignKeys(entity, entityType, fileName, lineNumber, errors, cancellationToken);
                 }
 
-                // Set CreatedById before filling missing properties
                 SetCreatedById(entity, createdById, fileName, lineNumber, errors);
                 SetUpdatedByIdToNull(entity, fileName, lineNumber, errors);
-                
                 FillMissingProperties(entity, entityType, fileName, lineNumber, errors);
                 ValidateEntity(entity, fileName, lineNumber, errors);
 
-                _context.Add(entity);
+                await _context.AddAsync(entity, cancellationToken);
                 importedCounts[tableName] = importedCounts.GetValueOrDefault(tableName) + 1;
             }
             catch (Exception ex)
@@ -221,6 +242,7 @@ public class CSVService : ICSVService
             }
         }
     }
+
     private async Task ResolveAndAssignForeignKeys(
         object entity,
         Type entityType,
@@ -292,7 +314,7 @@ public class CSVService : ICSVService
             }
 
             var idProperty = principalType.GetProperty("Id") 
-                ?? throw new InvalidOperationException($"Id property missing in {principalType.Name}");
+                ?? throw new InvalidOperationException($"Id property missing in {principalType.Name}\n");
             
             propInfo.SetValue(entity, idProperty.GetValue(principalEntity));
         }
@@ -307,14 +329,14 @@ public class CSVService : ICSVService
 
         var count = await dbSet.Cast<object>().CountAsync(ct);
         if (count == 0)
-            throw new InvalidOperationException($"Table {entityType.Name} est vide même après génération");
+            throw new InvalidOperationException($"Table {entityType.Name} est vide même après génération\n");
 
         var skip = _random.Next(0, count);
         var entity = await dbSet.Cast<object>().Skip(skip).FirstAsync(ct);
         return entity.GetType().GetProperty("Id")!.GetValue(entity)!;
     }
    
-    private async Task ProcessChildTableAsync(
+ private async Task ProcessChildTableAsync(
         CsvReader csv, 
         string fileName, 
         Dictionary<string, int> importedCounts, 
@@ -324,21 +346,18 @@ public class CSVService : ICSVService
     {
         while (await csv.ReadAsync())
         {
-            Console.WriteLine($"Raw line: {csv.Parser.RawRecord}");
-            Console.WriteLine($"Type field: {csv.GetField("Type")}");
             int lineNumber = csv.Parser.Row;
             var rawType = csv.GetField("Type")?.Trim();
             
             if (string.IsNullOrWhiteSpace(rawType))
             {
-                errors.Add($"Fichier {fileName}, ligne {lineNumber}: Colonne 'Type' est requise mais vide");
+                errors.Add($"Fichier {fileName}, ligne {lineNumber}: Colonne 'Type' est requise mais vide\n");
                 continue;
             }
 
             try
             {
                 var type = CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rawType.ToLower());
-
                 var typeMappings = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
                 {
                     ["Budget"] = "Budget",
@@ -348,21 +367,11 @@ public class CSVService : ICSVService
 
                 if (!typeMappings.TryGetValue(type, out var entityTypeName))
                 {
-                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: Type '{type}' non pris en charge");
+                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: Type '{type}' non pris en charge\n");
                     continue;
                 }
 
-                Type childType;
-                try
-                {
-                    childType = GetEntityType(entityTypeName);
-                }
-                catch (InvalidOperationException ex)
-                {
-                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: {ex.Message}");
-                    continue;
-                }
-
+                Type childType = GetEntityType(entityTypeName);
                 var fkInfo = GetForeignKeyInfo(childType);
                 var childEntity = Activator.CreateInstance(childType);
 
@@ -370,35 +379,31 @@ public class CSVService : ICSVService
                 
                 if (motherEntity == null)
                 {
-                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: Impossible de trouver l'entité mère");
+                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: Impossible de trouver l'entité mère\n");
                     continue;
                 }
                 
                 var motherId = motherEntity.GetType().GetProperty("Id")?.GetValue(motherEntity);
                 if (motherId == null || (motherId is Guid guid && guid == Guid.Empty))
                 {
-                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: L'entité mère n'a pas d'ID valide");
+                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: L'entité mère n'a pas d'ID valide\n");
                     continue;
                 }
                 
                 SetForeignKey(childEntity, fkInfo, motherEntity);
 
-                // Process each header in the CSV
                 foreach (var header in csv.HeaderRecord.Where(h => 
                     !h.Equals("Type", StringComparison.OrdinalIgnoreCase) && 
                     !h.StartsWith(fkInfo.MotherTable + "_", StringComparison.OrdinalIgnoreCase)))
                 {
-                    // Handle special case for Date field
-                    string propertyName = header;
-                    if (header.Equals("Date", StringComparison.OrdinalIgnoreCase))
-                    {
-                        propertyName = $"{entityTypeName}Date"; // e.g. "BudgetDate", "ExpenseDate"
-                    }
+                    string propertyName = header.Equals("Date", StringComparison.OrdinalIgnoreCase)
+                        ? $"{entityTypeName}Date"
+                        : header;
 
                     var prop = childType.GetProperty(propertyName, BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
                     if (prop == null)
                     {
-                        errors.Add($"Fichier {fileName}, ligne {lineNumber}: Propriété '{propertyName}' introuvable");
+                        errors.Add($"Fichier {fileName}, ligne {lineNumber}: Propriété '{propertyName}' introuvable\n");
                         continue;
                     }
 
@@ -411,16 +416,17 @@ public class CSVService : ICSVService
                 SetUpdatedByIdToNull(childEntity, fileName, lineNumber, errors);
                 FillMissingProperties(childEntity, childType, fileName, lineNumber, errors);
                 ValidateEntity(childEntity, fileName, lineNumber, errors);
-
-                _context.Add(childEntity);
+                
+                await _context.AddAsync(childEntity, cancellationToken);
                 importedCounts[type] = importedCounts.GetValueOrDefault(type) + 1;
             }
             catch (Exception ex)
             {
-                errors.Add($"Fichier {fileName}, ligne {csv.Parser.Row}: {ex.Message}");
+                errors.Add($"Fichier {fileName}, ligne {csv.Parser.Row}: {ex.Message}\n");
             }
         }
     }
+
 
     private void SetCreatedById(object entity, string createdById, string fileName, int line, List<string> errors)
     {
@@ -666,25 +672,14 @@ public class CSVService : ICSVService
     {
         try
         {
-            // On détermine le nom de la colonne à utiliser dans le CSV pour retrouver la mère.
-            // Par défaut, fkInfo.CsvColumnName peut être "CampaignId", or le CSV de la fille ne contient pas cette colonne.
-            // Si la colonne n'est pas présente, on utilise "Number" qui correspond à la valeur servant de lien.
             string csvField = fkInfo.CsvColumnName;
             if (!csv.Context.Reader.HeaderRecord.Contains(csvField))
             {
-                // Si le nom contient un underscore, on prend la partie après l'underscore
-                if (csvField.Contains("_"))
-                {
-                    csvField = csvField.Split('_')[1];
-                }
-                else
-                {
-                    // Sinon, on utilise "Number" par défaut
-                    csvField = "Number";
-                }
+                csvField = csvField.Contains("_") 
+                    ? csvField.Split('_')[1] 
+                    : "Number";
             }
             
-            // Récupère la valeur dans le CSV à partir du champ déterminé
             var keyValue = csv.GetField(csvField);
             if (string.IsNullOrWhiteSpace(keyValue))
             {
@@ -692,66 +687,64 @@ public class CSVService : ICSVService
                 return null;
             }
             
-            // Dans la table mère, la colonne correspondante est "Number" (même si dans le CSV mère elle s'appelle par exemple "CampaignId")
             string motherProperty = "Number";
+            var motherType = GetEntityType(fkInfo.MotherTable);
 
-            // On parcourt les types d'entités du modèle qui possèdent une propriété "Number"
-            var candidateMotherTypes = _context.Model.GetEntityTypes()
-                .Select(e => e.ClrType)
-                .Where(t => t.GetProperties().Any(p =>
-                            string.Equals(p.Name, motherProperty, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-            // Parcourt chaque type candidat pour tenter de trouver une correspondance
-            foreach (var motherType in candidateMotherTypes)
+            // 1. Chercher dans le ChangeTracker d'abord
+            var matchingProp = motherType.GetProperty(motherProperty, 
+                BindingFlags.IgnoreCase | BindingFlags.Public | BindingFlags.Instance);
+            
+            if (matchingProp != null)
             {
-                // Récupère la propriété "Number" dans la table mère
-                var matchingProp = motherType.GetProperties()
-                    .FirstOrDefault(p =>
-                        string.Equals(p.Name, motherProperty, StringComparison.OrdinalIgnoreCase));
-                if (matchingProp == null)
-                    continue;
+                var matchingEntity = _context.ChangeTracker.Entries()
+                    .Where(e => e.State == EntityState.Added && e.Entity.GetType() == motherType)
+                    .Select(e => e.Entity)
+                    .FirstOrDefault(e => 
+                    {
+                        var propValue = matchingProp.GetValue(e)?.ToString();
+                        return propValue != null && propValue == keyValue;
+                    });
 
-                // Accède au DbSet correspondant en filtrant sur les méthodes déclarées directement dans DbContext
-                var setMethod = typeof(DbContext)
-                    .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
-                    .Single(m => m.Name == nameof(DbContext.Set) && m.IsGenericMethod && m.GetParameters().Length == 0)
-                    .MakeGenericMethod(motherType);
-                var dbSet = (IQueryable)setMethod.Invoke(_context, null);
-
-                // Construit l'expression lambda : e => e.Number == keyValue
-                var param = Expression.Parameter(motherType, "e");
-                var prop = Expression.Property(param, matchingProp.Name);
-                var convertedKeyValue = Convert.ChangeType(keyValue, matchingProp.PropertyType);
-                var lambda = Expression.Lambda(Expression.Equal(prop, Expression.Constant(convertedKeyValue)), param);
-
-                // Applique le filtre via Queryable.Where
-                var whereMethod = typeof(Queryable)
-                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                    .Where(m => m.Name == nameof(Queryable.Where) && m.GetParameters().Length == 2)
-                    .First()
-                    .MakeGenericMethod(motherType);
-                var filteredQuery = (IQueryable)whereMethod.Invoke(null, new object[] { dbSet, lambda });
-
-                // Récupère la première entité correspondante via FirstOrDefaultAsync
-                var firstOrDefaultMethod = typeof(EntityFrameworkQueryableExtensions)
-                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
-                    .Where(m => m.Name == nameof(EntityFrameworkQueryableExtensions.FirstOrDefaultAsync)
-                        && m.GetParameters().Length == 2)
-                    .First()
-                    .MakeGenericMethod(motherType);
-                var resultTask = (Task)firstOrDefaultMethod.Invoke(null, new object[] { filteredQuery, ct });
-                await resultTask.ConfigureAwait(false);
-                var result = resultTask.GetType().GetProperty("Result")?.GetValue(resultTask);
-
-                if (result != null)
+                if (matchingEntity != null)
                 {
-                    // Une correspondance a été trouvée : on retourne l'entité mère.
-                    return result;
+                    return matchingEntity;
                 }
             }
 
-            // Aucune entité mère correspondante n'a été trouvée
+            // 2. Si pas trouvé dans le ChangeTracker, chercher en base
+            var setMethod = typeof(DbContext)
+                .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                .Single(m => m.Name == nameof(DbContext.Set) && m.IsGenericMethod && m.GetParameters().Length == 0)
+                .MakeGenericMethod(motherType);
+            var dbSet = (IQueryable)setMethod.Invoke(_context, null);
+
+            var param = Expression.Parameter(motherType, "e");
+            var prop = Expression.Property(param, matchingProp.Name);
+            var convertedKeyValue = Convert.ChangeType(keyValue, matchingProp.PropertyType);
+            var lambda = Expression.Lambda(Expression.Equal(prop, Expression.Constant(convertedKeyValue)), param);
+
+            var whereMethod = typeof(Queryable)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(m => m.Name == nameof(Queryable.Where) && m.GetParameters().Length == 2)
+                .First()
+                .MakeGenericMethod(motherType);
+            var filteredQuery = (IQueryable)whereMethod.Invoke(null, new object[] { dbSet, lambda });
+
+            var firstOrDefaultMethod = typeof(EntityFrameworkQueryableExtensions)
+                .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                .Where(m => m.Name == nameof(EntityFrameworkQueryableExtensions.FirstOrDefaultAsync)
+                    && m.GetParameters().Length == 2)
+                .First()
+                .MakeGenericMethod(motherType);
+            var resultTask = (Task)firstOrDefaultMethod.Invoke(null, new object[] { filteredQuery, ct });
+            await resultTask.ConfigureAwait(false);
+            var result = resultTask.GetType().GetProperty("Result")?.GetValue(resultTask);
+
+            if (result != null)
+            {
+                return result;
+            }
+
             errors.Add($"Fichier {fileName}, ligne {line}: Aucune entité mère correspondante trouvée pour la valeur '{keyValue}'.");
             return null;
         }
