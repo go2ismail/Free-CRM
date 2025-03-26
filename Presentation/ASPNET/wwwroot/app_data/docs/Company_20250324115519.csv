@@ -1,2 +1,0 @@
-﻿Id;Name;Description;Currency;Street;City;State;ZipCode;Country;PhoneNumber;FaxNumber;EmailAddress;Website;IsDeleted;CreatedAtUtc;CreatedById;UpdatedAtUtc;UpdatedById
-8790fb26-7f58-41e0-b4b6-b2aa0120cbec;Acme Corp;;USD;123 Main St;Metropolis;New York;10001;USA;+1-212-555-1234;+1-212-555-5678;info@acmecorp.com;https://www.acmecorp.com;False;2025-03-24 05:15:26;;;

@@ -146,7 +146,7 @@ public class CreateExpense2Handler : IRequestHandler<CreateExpense2Request, Crea
             .Budget
             .AsNoTracking()
             .IsDeletedEqualTo(false)
-            .Where(b => b.CampaignId == request.CampaignId)
+            .Where(b => b.CampaignId == request.CampaignId && (b.Status == BudgetStatus.Confirmed))
             .Select(b => b.Amount) 
             .SumAsync(); 
         
@@ -154,7 +154,7 @@ public class CreateExpense2Handler : IRequestHandler<CreateExpense2Request, Crea
             .Expense
             .AsNoTracking()
             .IsDeletedEqualTo(false)
-            .Where(b => b.CampaignId == request.CampaignId)
+            .Where(b => b.CampaignId == request.CampaignId && (b.Status == ExpenseStatus.Confirmed))
             .Select(e => e.Amount) 
             .SumAsync(); 
 

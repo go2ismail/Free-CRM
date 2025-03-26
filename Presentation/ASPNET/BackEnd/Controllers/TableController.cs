@@ -23,7 +23,6 @@ public class TableController : BaseApiController
         public string Name { get; set; }
     }
 
-    
     [Authorize]
     [HttpPost("DeleteTable")]
     public async Task<ActionResult<ApiSuccessResult<DeleteTableResult>>> DeleteTableAsync(DeleteTableRequest request, CancellationToken cancellationToken)
@@ -126,6 +125,73 @@ public class TableController : BaseApiController
             return StatusCode(500, new
             {
                 Message = "An error occurred while importing data into the table.",
+                ErrorDetails = ex.Message
+            });
+        }
+    }
+    
+    [Authorize]
+    [HttpPost("ImportDataTables")]
+    public async Task<ActionResult<ImportFileResult>> ImportDataTablesAsync([FromForm]string iduser,List<IFormFile> files, CancellationToken cancellationToken)
+    {
+        try
+        {
+            if (files == null || files.Count == 0)
+            {
+                return BadRequest(new { Message = "No files provided or files are empty." });
+            }
+
+            var fileNames = new List<string>();
+            var csvDataList = new List<byte[]>();
+
+            foreach (var file in files)
+            {
+                if (file.Length == 0)
+                {
+                    return BadRequest(new { Message = $"File {file.FileName} is empty." });
+                }
+
+                using var memoryStream = new MemoryStream();
+                await file.CopyToAsync(memoryStream, cancellationToken);
+                csvDataList.Add(memoryStream.ToArray());
+                fileNames.Add(file.FileName);
+            }
+
+            var request = new ImportFileDataRequest
+            {
+                CsvData = csvDataList,
+                CreatedById = iduser,
+                FileName = fileNames
+            };
+
+            var result = await _sender.Send(request, cancellationToken);
+
+            if (result == null)
+            {
+                return StatusCode(500, "No data found in the CSV files.");
+            }
+
+            return Ok(new ApiSuccessResult<ImportFileResult>
+            {
+                Code = StatusCodes.Status200OK,
+                Message = $"Success executing {nameof(ImportDataTablesAsync)}",
+                Content = result
+            });
+        }
+        catch (AggregateException ex)
+        {
+            var errorDetails = string.Join("; ", ex.InnerExceptions.Select(e => e.Message));
+            return StatusCode(400, new
+            {
+                Message = "Validation errors occurred while importing data.",
+                ErrorDetails = errorDetails
+            });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new
+            {
+                Message = "An error occurred while importing data into the tables.",
                 ErrorDetails = ex.Message
             });
         }

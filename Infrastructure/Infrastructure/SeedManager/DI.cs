@@ -1,4 +1,6 @@
-﻿using Infrastructure.DataAccessManager.EFCore.Contexts;
+﻿using Application.Common.Repositories;
+using Infrastructure.DataAccessManager.EFCore.Contexts;
+using Infrastructure.DataAccessManager.EFCore.Repositories;
 using Infrastructure.SeedManager.Demos;
 using Infrastructure.SeedManager.Systems;
 using Microsoft.Extensions.Configuration;
@@ -49,6 +51,7 @@ public static class DI
 
     public static IServiceCollection RegisterDemoSeedManager(this IServiceCollection services, IConfiguration configuration)
     {
+        
         services.AddScoped<TaxSeeder>();
         services.AddScoped<UserSeeder>();
         services.AddScoped<CustomerCategorySeeder>();
@@ -64,10 +67,7 @@ public static class DI
         services.AddScoped<ProductSeeder>();
         services.AddScoped<SalesOrderSeeder>();
         services.AddScoped<PurchaseOrderSeeder>();
-
-
-        services.AddScoped<SalesTeamSeeder>();
-        services.AddScoped<SalesRepresentativeSeeder>();
+        
         services.AddScoped<CampaignSeeder>();
         services.AddScoped<BudgetSeeder>();
         services.AddScoped<RateSeeder>();

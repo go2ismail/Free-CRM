@@ -1,0 +1,20 @@
+﻿Id;Name;Number;Description;UnitPrice;Physical;UnitMeasureId;ProductGroupId;IsDeleted;CreatedAtUtc;CreatedById;UpdatedAtUtc;UpdatedById
+00936c8f-099f-43b2-9b74-b2aa03fbf1d1;HDD 1T;000920250324ART;;800;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;b03adc51-e65c-4834-a875-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+00f95ae2-1d4f-43cc-8a57-b2aa03fbf1d1;Dell Servers;000120250324ART;;5000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;9ffd0960-70ae-4b9d-8a85-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+0151a46f-2eb2-403b-b157-b2aa03fbf1d1;Antennas and Signal Boosters;000620250324ART;;2000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;c89b946d-6750-462b-8749-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+0853bd32-cf25-4e65-bd32-b2aa03fbf1d1;Dell Monitor 32inch;001520250324ART;;1500;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;312a661a-b4f7-413f-bc11-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+1b6e5c0e-1a64-45bf-9974-b2aa03fbf1d1;Dell Mouse;001320250324ART;;500;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;312a661a-b4f7-413f-bc11-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+283a013f-9823-4089-8e8d-b2aa03fbf1d1;Dell Laptops;000320250324ART;;3000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;9ffd0960-70ae-4b9d-8a85-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+4760e0b8-30cd-49a9-a7fc-b2aa03fbf1d1;Discount;001920250324ART;;-1;False;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;05ab6ca0-c5bc-4b1a-8149-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+49a2b2ce-8c06-4bbd-a55c-b2aa03fbf1d1;SSD 1T;001120250324ART;;1500;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;b03adc51-e65c-4834-a875-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+4c72ac60-5170-4a64-8660-b2aa03fbf1d1;Wifii;000720250324ART;;1000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;c89b946d-6750-462b-8749-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+6f9c7d2b-1b16-48d1-bad8-b2aa03fbf1d1;SSD 500;001020250324ART;;1000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;b03adc51-e65c-4834-a875-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+724de719-55a0-478f-be4e-b2aa03fbf1d1;Routers and Switches;000520250324ART;;1000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;c89b946d-6750-462b-8749-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+72feee8f-e434-4315-b922-b2aa03fbf1d1;HDD 500;000820250324ART;;500;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;b03adc51-e65c-4834-a875-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+79c6e351-ec71-4009-8089-b2aa03fbf1d1;D365 License;001720250324ART;;800;False;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;46f90070-fcb6-42b8-88df-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+9fb70a52-e577-4f84-a6f5-b2aa03fbf1d1;IT Security;001820250324ART;;500;False;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;05ab6ca0-c5bc-4b1a-8149-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+a7b14916-f2e2-491c-ab31-b2aa03fbf1d1;Dell Webcams;001620250324ART;;500;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;312a661a-b4f7-413f-bc11-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+e3318ed3-5790-47c7-9feb-b2aa03fbf1d1;Dell Desktop Computers;000220250324ART;;2000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;9ffd0960-70ae-4b9d-8a85-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+e3f8822d-00eb-49c5-8f42-b2aa03fbf1d1;Network Cables;000420250324ART;;100;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;c89b946d-6750-462b-8749-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+e74b797e-03e1-4b6b-87e2-b2aa03fbf1d1;Dell Monitor 27inch;001420250324ART;;1000;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;312a661a-b4f7-413f-bc11-b2aa03fbf19c;False;2025-03-24 18:34:03;;;
+f06dcb7e-6658-4f32-9b02-b2aa03fbf1d1;Dell Keyboard;001220250324ART;;700;True;42db5d8b-8ef2-40ba-8e57-b2aa03fbf189;312a661a-b4f7-413f-bc11-b2aa03fbf19c;False;2025-03-24 18:34:03;;;

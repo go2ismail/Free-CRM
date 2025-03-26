@@ -1,8 +1,10 @@
 ﻿using System.Data;
 using System.Data.Common;
+using System.Dynamic;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using Application.Common.Repositories;
 using Application.Common.Services.FileDocumentManager;
 using CsvHelper;
@@ -120,7 +122,7 @@ public class FileDocumentService : IFileDocumentService
             throw new Exception("No data found in the table.");
         }
 
-        var csvFileName = $"{tableName}_{DateTime.UtcNow:yyyyMMddHHmmss}.csv";
+        var csvFileName = $"{tableName}_{DateTime.UtcNow:yyyy-M-d dddd}.csv";
         var filePath = Path.Combine(_folderPath, csvFileName);
 
         var csvConfig = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -334,5 +336,129 @@ public class FileDocumentService : IFileDocumentService
 
         return insertedCount;
     }
+    public async Task<Dictionary<string, int>> ImportMultipleTablesFromCsvAsync(byte[] csvData, CancellationToken cancellationToken = default)
+    {
+        if (csvData == null || csvData.Length == 0)
+            throw new ArgumentException("CSV data is required", nameof(csvData));
 
+        var results = new Dictionary<string, int>();
+        var currentSection = string.Empty;
+        List<string> currentHeaders = null;
+        var currentTableRecords = new List<dynamic>();
+
+        using var stream = new MemoryStream(csvData);
+        using var reader = new StreamReader(stream, Encoding.UTF8);
+        
+        // Première passe: analyse du CSV
+        var sections = new Dictionary<string, (List<string> Headers, List<dynamic> Records)>();
+        string line;
+        while ((line = await reader.ReadLineAsync()) != null)
+        {
+            if (string.IsNullOrWhiteSpace(line))
+                continue;
+
+            if (CsvImportHelper.IsSectionLine(line, out var newSection))
+            {
+                if (!string.IsNullOrEmpty(currentSection) && currentTableRecords.Count > 0)
+                {
+                    sections[currentSection] = (currentHeaders, currentTableRecords);
+                }
+                
+                currentSection = newSection;
+                currentHeaders = null;
+                currentTableRecords = new List<dynamic>();
+                continue;
+            }
+
+            if (string.IsNullOrEmpty(currentSection))
+                continue;
+
+            var values = line.Split(';').Select(v => v.Trim()).ToArray();
+            
+            if (currentHeaders == null)
+            {
+                currentHeaders = values.ToList();
+            }
+            else
+            {
+                var record = new ExpandoObject() as IDictionary<string, object>;
+                for (int i = 0; i < currentHeaders.Count && i < values.Length; i++)
+                {
+                    record[currentHeaders[i]] = values[i];
+                }
+                currentTableRecords.Add(record);
+            }
+        }
+
+        if (!string.IsNullOrEmpty(currentSection) && currentTableRecords.Count > 0)
+        {
+            sections[currentSection] = (currentHeaders, currentTableRecords);
+        }
+
+        if (sections.Count == 0)
+            throw new Exception("No valid sections found in CSV file.");
+
+        // Deuxième passe: traitement
+        using var transaction = await _dataContext.Database.BeginTransactionAsync(cancellationToken);
+        try
+        {
+            var importedEntities = new Dictionary<string, Dictionary<object, object>>();
+            
+            foreach (var section in sections)
+            {
+                var (tableName, headers, records) = (section.Key, section.Value.Headers, section.Value.Records);
+                importedEntities[tableName] = new Dictionary<object, object>();
+
+                var entityType = CsvImportHelper.FindEntityType(tableName) ?? 
+                    throw new Exception($"Entity type for table '{tableName}' not found.");
+                
+                if (!CsvImportHelper.IsValidEntityType(_dataContext, entityType))
+                    throw new Exception($"Type '{entityType.Name}' is not a valid entity type.");
+
+                var dbSet = CsvImportHelper.GetDbSetForEntity(_dataContext, entityType);
+                
+                foreach (var record in records.Cast<IDictionary<string, object>>())
+                {
+                    var entity = Activator.CreateInstance(entityType);
+                    
+                    foreach (var kvp in record)
+                    {
+                        try
+                        {
+                            if (CsvImportHelper.IsForeignKeyProperty(entityType, kvp.Key, out var fkInfo))
+                            {
+                                CsvImportHelper.HandleForeignKey(entity, fkInfo, kvp.Value, importedEntities, _dataContext);
+                            }
+                            else
+                            {
+                                CsvImportHelper.SetPropertyValue(entity, entityType, kvp.Key, kvp.Value);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            throw new Exception($"Error mapping field '{kvp.Key}' in table '{tableName}': {ex.Message}");
+                        }
+                    }
+
+                    dbSet.GetType().GetMethod("Add")?.Invoke(dbSet, new[] { entity });
+                    
+                    // Store the entity with its primary key value
+                    var keyValue = CsvImportHelper.GetPrimaryKeyValue(entity);
+                    importedEntities[tableName][keyValue] = entity;
+                }
+                
+                await _dataContext.SaveChangesAsync(cancellationToken);
+                results.Add(tableName, records.Count);
+            }
+
+            await transaction.CommitAsync(cancellationToken);
+        }
+        catch (Exception ex)
+        {
+            await transaction.RollbackAsync(cancellationToken);
+            throw new Exception($"Import failed: {ex.Message}", ex);
+        }
+
+        return results;
+    }    
 }

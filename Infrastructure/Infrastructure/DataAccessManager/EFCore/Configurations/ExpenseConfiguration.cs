@@ -11,13 +11,13 @@ public class ExpenseConfiguration : BaseEntityConfiguration<Expense>
     {
         base.Configure(builder);
 
-        builder.Property(x => x.Number).HasMaxLength(CodeConsts.MaxLength).IsRequired(true);
-        builder.Property(x => x.Title).HasMaxLength(NameConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.Number).HasMaxLength(CodeConsts.MaxLength).IsRequired(false);
+        builder.Property(x => x.Title).HasMaxLength(NameConsts.MaxLength).IsRequired(false);
         builder.Property(x => x.Description).HasMaxLength(DescriptionConsts.MaxLength).IsRequired(false);
-        builder.Property(x => x.ExpenseDate).IsRequired(true);
-        builder.Property(x => x.Status).IsRequired(true);
-        builder.Property(x => x.Amount).IsRequired(true);
-        builder.Property(x => x.CampaignId).HasMaxLength(IdConsts.MaxLength).IsRequired(true);
+        builder.Property(x => x.ExpenseDate).IsRequired(false);
+        builder.Property(x => x.Status).IsRequired(false);
+        builder.Property(x => x.Amount).IsRequired(false);
+        builder.Property(x => x.CampaignId).HasMaxLength(IdConsts.MaxLength).IsRequired(false);
 
         builder.HasIndex(e => e.Number);
         builder.HasIndex(e => e.Title);

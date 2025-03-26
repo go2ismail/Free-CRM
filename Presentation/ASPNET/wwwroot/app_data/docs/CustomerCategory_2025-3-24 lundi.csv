@@ -1,0 +1,6 @@
+﻿Id;Name;Description;IsDeleted;CreatedAtUtc;CreatedById;UpdatedAtUtc;UpdatedById
+3c2b42ab-3d61-4480-8b81-b2aa03fbef6e;Micro;;False;2025-03-24 18:34:02;;;
+88b7770b-62e7-462f-8c67-b2aa03fbef6e;Medium;;False;2025-03-24 18:34:02;;;
+b16d2da3-66a9-43e1-a8cd-b2aa03fbef6e;Startup;;False;2025-03-24 18:34:02;;;
+c35d8c8c-d52d-47e3-b6d1-b2aa03fbef6e;Small;;False;2025-03-24 18:34:02;;;
+d558db62-aac7-4a78-b072-b2aa03fbef6e;Enterprise;;False;2025-03-24 18:34:02;;;

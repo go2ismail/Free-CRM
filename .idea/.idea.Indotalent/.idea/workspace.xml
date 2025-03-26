@@ -10,8 +10,14 @@
   <component name="ChangeListManager">
     <list default="true" id="d4788bc4-904c-4863-8007-376b30c56024" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Indotalent/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Indotalent/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/Features/ExpenseManager/Commands/CreateExpense.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/Features/ExpenseManager/Commands/CreateExpense.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/Features/FileDocumentManager/Commands/CreateFile.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/Features/FileDocumentManager/Commands/CreateFile.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Application/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Domain/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/BudgetConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/BudgetConfiguration.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CampaignConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CampaignConfiguration.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CompanyConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/CompanyConfiguration.cs" afterDir="false" />
@@ -25,10 +31,21 @@
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadActivityConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadActivityConfiguration.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadConfiguration.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadContactConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/DataAccessManager/EFCore/Configurations/LeadContactConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/FileDocumentManager/DI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/FileDocumentManager/DI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/FileDocumentManager/FileDocumentHelper.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/FileDocumentManager/FileDocumentHelper.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/FileDocumentManager/FileDocumentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/FileDocumentManager/FileDocumentService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/SeedManager/DI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/SeedManager/DI.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Infrastructure/Infrastructure/bin/Debug/net9.0/Infrastructure.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/BackEndConfiguration.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/BackEndConfiguration.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/TableController.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/BackEnd/Controllers/TableController.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Database/TableList.cshtml" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Database/TableList.cshtml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Database/TableList.cshtml.js" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/FrontEnd/Pages/Database/TableList.cshtml.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/Program.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.exe" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.exe" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.pdb" afterDir="false" />
@@ -36,9 +53,14 @@
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.runtime.json" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/ASPNET.staticwebassets.runtime.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Application.pdb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.dll" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Domain.pdb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.dll" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.pdb" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/bin/Debug/net9.0/Infrastructure.pdb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Campaign_20250323132533.csv" beforeDir="false" afterPath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Campaign_20250323132533.csv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Campaign_20250323132533.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Campaign_20250323132533.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/Company_20250324115519.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Presentation/ASPNET/wwwroot/app_data/docs/SalesTeam_20250322080828.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,9 +76,12 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/3c13bcf2472e33fbd9b71675dd1d838142686d7a4f62aafb458d93deb4794/AbstractValidator.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/4e5b644d52badeab019a23a8ad0561fe88d8d7cf783a15c546556219e83929/CsvConfiguration.cs" root0="SKIP_HIGHLIGHTING" />
     <setting file="file://$APPLICATION_CONFIG_DIR$/resharper-host/SourcesCache/9161da3da671f777cc3652d39696c23db97793e37cb97fcb4e1e87234e56322/ValidationException.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/css/alt/adminlte.extra-components.css.map" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/css/alt/adminlte.pages.css.map" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/js/adminlte.min.js.map" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/plugins/bs-custom-file-input/bs-custom-file-input.min.js.map" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/plugins/summernote/summernote-lite.js.map" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/plugins/summernote/summernote-lite.min.js.map" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Presentation/ASPNET/wwwroot/adminlte/plugins/summernote/summernote.js.map" root0="FORCE_HIGHLIGHTING" />
@@ -150,6 +175,10 @@
       <workItem from="1742564734325" duration="10717000" />
       <workItem from="1742578005107" duration="77172000" />
       <workItem from="1742789983273" duration="34210000" />
+      <workItem from="1742835616757" duration="13012000" />
+      <workItem from="1742850101191" duration="21055000" />
+      <workItem from="1742916317231" duration="19524000" />
+      <workItem from="1742944028961" duration="10552000" />
     </task>
     <servers />
   </component>

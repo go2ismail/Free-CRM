@@ -11,12 +11,17 @@
                 name: '',
             },
             changeAvatarTitle: 'Import Table',
-            isSubmitting: false
+            isSubmitting: false,
+            uploadedFiles: [],
+            isImporting: false,
+            fileUploadTitle: 'Import Multiple CSV Files'
         });
 
         const mainGridRef = Vue.ref(null);
         const fileUploadRef = Vue.ref(null);
+        const fileUploadDataRef = Vue.ref(null);
         const changeAvatarModalRef = Vue.ref(null);
+        const fileUploadModalRef = Vue.ref(null);
         const mainModalRef = Vue.ref(null);
 
         const resetFormState = () => {
@@ -75,6 +80,9 @@
                             timer: 3000,
                             showConfirmButton: false
                         });
+                        setTimeout(() => {
+                            changeAvatarModal.obj.hide();
+                        }, 3000);
                     }
                     return response;
                 } catch (error) {
@@ -98,6 +106,9 @@
                             timer: 2000,
                             showConfirmButton: false
                         });
+                        setTimeout(() => {
+                            mainModal.obj.hide();
+                        }, 2000);
                     } else {
                         throw new Error("No data found in the table.");
                     }
@@ -208,6 +219,63 @@
                     console.error("Import error:", error);
                 }
             },
+            handleMultiFileUpload: async (files) => {
+                try {
+                    state.uploadedFiles = [...files];
+                } catch (error) {
+                    console.error("File upload error:", error);
+                }
+            },
+
+            importFiles: async () => {
+                if (state.uploadedFiles.length === 0) return;
+
+                state.isImporting = true;
+
+                try {
+                    const formData = new FormData();
+                    formData.append('iduser', StorageManager.getUserId())
+                    state.uploadedFiles.forEach(file => {
+                        formData.append('files', file);
+                    });
+
+                    const response = await AxiosManager.post('/Table/ImportDataTables', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+
+                    if (response.status === 200) {
+                        Swal.fire({
+                            icon: "success",
+                            title: "Import Successful",
+                            html: `<p>${response.data.content.message}</p>
+                                   <p>Total rows inserted: ${response.data.content.insertedCount}</p>`,
+                            confirmButtonText: "OK"
+                        });
+                        fileUploadModal.obj.hide();
+                        await methods.populateMainData();
+                    }
+                } catch (error) {
+                    Swal.fire({
+                        icon: "error",
+                        title: error.response?.data?.message || "Import Failed",
+                        html: `<p>${error.response?.data?.errorDetails || "An error occurred during import."}</p>
+                               ${error.response?.data?.errors ?
+                            `<ul>${error.response.data.errors.map(e => `<li>${e}</li>`).join('')}</ul>` : ''}`,
+                    });
+                } finally {
+                    state.isImporting = false;
+                    state.uploadedFiles = [];
+                }
+            },
+
+            clearFiles: () => {
+                state.uploadedFiles = [];
+                if (fileUploadDataRef.value && fileUploadDataRef.value.dropzone) {
+                    fileUploadDataRef.value.dropzone.removeAllFiles();
+                }
+            },
         };
 
         const mainGrid = {
@@ -237,6 +305,8 @@
                     ],
                     toolbar: [
                         'Search',
+                        { type: 'Separator' },
+                        { text: 'Import', tooltipText: 'Import', prefixIcon: 'e-download', id: 'ImportDataCustom' },
                         { type: 'Separator' },
                         { text: 'Import', tooltipText: 'Import', prefixIcon: 'e-download', id: 'ImportCustom' },
                         { text: 'Export', tooltipText: 'Export', prefixIcon: 'e-export', id: 'ExportCustom' },
@@ -268,7 +338,11 @@
                     },
                     toolbarClick: async (args) => {
                         if (args.item.id === 'MainGrid_excelexport') {
-                            mainGrid.obj.excelExport();
+                            fileUploadModal.obj.show();
+                        }
+
+                        if (args.item.id === 'ImportDataCustom') {
+                            fileUploadModal.obj.show();
                         }
 
                         if (args.item.id === 'ImportCustom') {
@@ -328,12 +402,14 @@
                 
                 mainModal.create();
                 changeAvatarModal.create();
+                fileUploadModal.create();
 
                 mainModalRef.value?.addEventListener('hidden.bs.modal', () => {
                     resetFormState();
                 });
                 
                 initDropzone();
+                initDropDatazone();
                 
                 
 
@@ -349,6 +425,7 @@
         });
         
         let dropzoneInitialized = false;
+        let dropDatazoneInitialized = false;
         const initDropzone = () => {
             if (!dropzoneInitialized && fileUploadRef.value) {
                 dropzoneInitialized = true;
@@ -372,6 +449,30 @@
             }
         };
 
+        const initDropDatazone = () => {
+            if (!dropDatazoneInitialized && fileUploadDataRef.value) {
+                dropDatazoneInitialized = true;
+                const dropzoneInstance = new Dropzone(fileUploadDataRef.value, {
+                    url: "#",
+                    paramName: "file",
+                    maxFiles: 10, // Augmenté pour permettre plusieurs fichiers
+                    maxFilesize: 5,
+                    acceptedFiles: ".csv",
+                    addRemoveLinks: true,
+                    dictDefaultMessage: "Drop CSV files here or click to select",
+                    autoProcessQueue: false,
+                    parallelUploads: 10,
+                    init: function () {
+                        this.on("addedfiles", async function (files) {
+                            await handler.handleMultiFileUpload(files);
+                        });
+                    }
+                });
+                fileUploadDataRef.value.dropzone = dropzoneInstance;
+            }
+        };
+
+
         const mainModal = {
             obj: null,
             create: () => {
@@ -392,13 +493,36 @@
             }
         };
 
+        const fileUploadModal = {
+            obj: null,
+            create: () => {
+                fileUploadModal.obj = new bootstrap.Modal(fileUploadModalRef.value, {
+                    backdrop: 'static',
+                    keyboard: false
+                });
+            }
+        };
+
+        const formatFileSize = (bytes) => {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        };
+
         return {
             mainGridRef,
             state,
             mainModalRef,
             changeAvatarModalRef,
+            fileUploadModalRef,
             fileUploadRef,
+            fileUploadDataRef,
             handler,
+            clearFiles: handler.clearFiles,
+            importFiles: handler.importFiles,
+            formatFileSize
         };
     }
 };
