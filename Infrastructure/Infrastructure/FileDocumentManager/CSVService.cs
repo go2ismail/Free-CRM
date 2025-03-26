@@ -370,7 +370,7 @@ public class CSVService : ICSVService
                 
                 if (motherEntity == null)
                 {
-                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: Impossible de trouver ou créer l'entité mère");
+                    errors.Add($"Fichier {fileName}, ligne {lineNumber}: Impossible de trouver l'entité mère");
                     continue;
                 }
                 
@@ -666,80 +666,94 @@ public class CSVService : ICSVService
     {
         try
         {
-            var motherType = GetEntityType(fkInfo.MotherTable);
-            
-            // Get the value from CSV - using "Number" header
-            var keyValue = csv.GetField("Number"); // Changed from fkInfo.CsvColumnName
-            
-            // 1. Try to find existing entity by campaign number
-            var setMethod = typeof(DbContext).GetMethods()
-                .First(m => m.Name == nameof(DbContext.Set) 
-                    && m.IsGenericMethod
-                    && m.GetParameters().Length == 0)
-                .MakeGenericMethod(motherType);
-            
-            var dbSet = (IQueryable)setMethod.Invoke(_context, null);
-
-            // Build query expression - look for matching Number property
-            var param = Expression.Parameter(motherType, "e");
-            var prop = Expression.Property(param, "Number"); // Changed from fkInfo.MotherKeyProperty
-            var value = Convert.ChangeType(keyValue, prop.Type);
-            var lambda = Expression.Lambda(Expression.Equal(prop, Expression.Constant(value)), param);
-
-            // Execute query
-            var whereMethod = typeof(Queryable).GetMethods()
-                .First(m => m.Name == nameof(Queryable.Where) 
-                    && m.GetParameters().Length == 2)
-                .MakeGenericMethod(motherType);
-            
-            var filteredQuery = (IQueryable)whereMethod.Invoke(null, new object[] { dbSet, lambda });
-
-            var firstOrDefaultMethod = typeof(EntityFrameworkQueryableExtensions)
-                .GetMethods()
-                .First(m => m.Name == nameof(EntityFrameworkQueryableExtensions.FirstOrDefaultAsync) 
-                    && m.GetParameters().Length == 2 
-                    && m.GetParameters()[1].ParameterType == typeof(CancellationToken))
-                .MakeGenericMethod(motherType);
-
-            var resultTask = (Task)firstOrDefaultMethod.Invoke(null, new object[] { filteredQuery, ct });
-            await resultTask.ConfigureAwait(false);
-            
-            var result = resultTask.GetType().GetProperty("Result")?.GetValue(resultTask);
-            
-            if (result != null) 
-                return result;
-
-            // 2. If no existing entity found, create new one
-            var newEntity = Activator.CreateInstance(motherType);
-            
-            // Set the Number property from CSV
-            var numberProperty = motherType.GetProperty("Number");
-            if (numberProperty != null)
+            // On détermine le nom de la colonne à utiliser dans le CSV pour retrouver la mère.
+            // Par défaut, fkInfo.CsvColumnName peut être "CampaignId", or le CSV de la fille ne contient pas cette colonne.
+            // Si la colonne n'est pas présente, on utilise "Number" qui correspond à la valeur servant de lien.
+            string csvField = fkInfo.CsvColumnName;
+            if (!csv.Context.Reader.HeaderRecord.Contains(csvField))
             {
-                numberProperty.SetValue(newEntity, Convert.ChangeType(keyValue, numberProperty.PropertyType));
+                // Si le nom contient un underscore, on prend la partie après l'underscore
+                if (csvField.Contains("_"))
+                {
+                    csvField = csvField.Split('_')[1];
+                }
+                else
+                {
+                    // Sinon, on utilise "Number" par défaut
+                    csvField = "Number";
+                }
+            }
+            
+            // Récupère la valeur dans le CSV à partir du champ déterminé
+            var keyValue = csv.GetField(csvField);
+            if (string.IsNullOrWhiteSpace(keyValue))
+            {
+                errors.Add($"Fichier {fileName}, ligne {line}: Valeur pour '{csvField}' manquante.");
+                return null;
+            }
+            
+            // Dans la table mère, la colonne correspondante est "Number" (même si dans le CSV mère elle s'appelle par exemple "CampaignId")
+            string motherProperty = "Number";
+
+            // On parcourt les types d'entités du modèle qui possèdent une propriété "Number"
+            var candidateMotherTypes = _context.Model.GetEntityTypes()
+                .Select(e => e.ClrType)
+                .Where(t => t.GetProperties().Any(p =>
+                            string.Equals(p.Name, motherProperty, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+            // Parcourt chaque type candidat pour tenter de trouver une correspondance
+            foreach (var motherType in candidateMotherTypes)
+            {
+                // Récupère la propriété "Number" dans la table mère
+                var matchingProp = motherType.GetProperties()
+                    .FirstOrDefault(p =>
+                        string.Equals(p.Name, motherProperty, StringComparison.OrdinalIgnoreCase));
+                if (matchingProp == null)
+                    continue;
+
+                // Accède au DbSet correspondant en filtrant sur les méthodes déclarées directement dans DbContext
+                var setMethod = typeof(DbContext)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+                    .Single(m => m.Name == nameof(DbContext.Set) && m.IsGenericMethod && m.GetParameters().Length == 0)
+                    .MakeGenericMethod(motherType);
+                var dbSet = (IQueryable)setMethod.Invoke(_context, null);
+
+                // Construit l'expression lambda : e => e.Number == keyValue
+                var param = Expression.Parameter(motherType, "e");
+                var prop = Expression.Property(param, matchingProp.Name);
+                var convertedKeyValue = Convert.ChangeType(keyValue, matchingProp.PropertyType);
+                var lambda = Expression.Lambda(Expression.Equal(prop, Expression.Constant(convertedKeyValue)), param);
+
+                // Applique le filtre via Queryable.Where
+                var whereMethod = typeof(Queryable)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Where(m => m.Name == nameof(Queryable.Where) && m.GetParameters().Length == 2)
+                    .First()
+                    .MakeGenericMethod(motherType);
+                var filteredQuery = (IQueryable)whereMethod.Invoke(null, new object[] { dbSet, lambda });
+
+                // Récupère la première entité correspondante via FirstOrDefaultAsync
+                var firstOrDefaultMethod = typeof(EntityFrameworkQueryableExtensions)
+                    .GetMethods(BindingFlags.Public | BindingFlags.Static)
+                    .Where(m => m.Name == nameof(EntityFrameworkQueryableExtensions.FirstOrDefaultAsync)
+                        && m.GetParameters().Length == 2)
+                    .First()
+                    .MakeGenericMethod(motherType);
+                var resultTask = (Task)firstOrDefaultMethod.Invoke(null, new object[] { filteredQuery, ct });
+                await resultTask.ConfigureAwait(false);
+                var result = resultTask.GetType().GetProperty("Result")?.GetValue(resultTask);
+
+                if (result != null)
+                {
+                    // Une correspondance a été trouvée : on retourne l'entité mère.
+                    return result;
+                }
             }
 
-            // Ensure ID is generated
-            var idProperty = motherType.GetProperty("Id");
-            if (idProperty != null)
-            {
-                if (idProperty.PropertyType == typeof(Guid))
-                {
-                    idProperty.SetValue(newEntity, Guid.NewGuid());
-                }
-                else if (idProperty.PropertyType == typeof(string))
-                {
-                    idProperty.SetValue(newEntity, Guid.NewGuid().ToString());
-                }
-                // For int IDs, let EF generate it
-            }
-
-            // Set required properties to avoid validation errors
-            FillMissingProperties(newEntity, motherType, fileName, line, errors);
-            
-            _context.Add(newEntity);
-            await _context.SaveChangesAsync(ct);
-            return newEntity;
+            // Aucune entité mère correspondante n'a été trouvée
+            errors.Add($"Fichier {fileName}, ligne {line}: Aucune entité mère correspondante trouvée pour la valeur '{keyValue}'.");
+            return null;
         }
         catch (Exception ex)
         {
@@ -747,7 +761,7 @@ public class CSVService : ICSVService
             return null;
         }
     }
-
+    
     private async Task<object> CreateNewMotherEntity(Type motherType, string keyProperty, object keyValue, CancellationToken ct)
     {
         var entity = Activator.CreateInstance(motherType);
