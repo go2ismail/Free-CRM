@@ -30,7 +30,7 @@ public class UpdateBudgetValidator : AbstractValidator<UpdateBudgetRequest>
         RuleFor(x => x.Id).NotEmpty();
         RuleFor(x => x.Title).NotEmpty();
         RuleFor(x => x.BudgetDate).NotNull();
-        RuleFor(x => x.Amount).NotNull();
+        RuleFor(x => x.Amount).NotNull().GreaterThan(0);
         RuleFor(x => x.CampaignId).NotEmpty();
         RuleFor(x => x.Status).NotEmpty();
     }

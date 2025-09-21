@@ -1,0 +1,63 @@
+﻿@page
+@model ASPNET.FrontEnd.Pages.Data.manageModel
+@{
+    ViewData["Title"] = "Manage Data";
+}
+
+<div id="app" v-cloak>
+    <div class="row">
+        <div class="col-md-3">
+            <h3 class="e-text-header g-3">Button for Clear or Reset Data on the base</h3>
+            <button class="btn btn-danger" v-on:click="handleClear" :disabled="state.isSubmittingC">
+                Clear
+                <span v-if="state.isSubmittingC" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
+
+            <button class="btn btn-info" v-on:click="handleReset" :disabled="state.isSubmittingR">
+                Reset
+                <span v-if="state.isSubmittingR" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
+
+        </div>
+
+        <div class="col-md-3">
+            <h3 class="e-text-header g-3">Import Data with a file</h3>
+            <div class="form-group">
+                <label for="fileSeparatorRef" class="text-body">Separator</label>
+                <input type="text" id="fileSeparatorRef" class="form-control" value=";"/>
+                <label for="fileformatDateRef" class="text-body">FormatDate</label>
+                <input type="text" id="fileformatDateRef" class="form-control" value="dd/MM/yyyy HH:mm:ss" />
+
+                <label for="fileInputRef" class="text-body g-0">File Campaign</label>
+                <input type="file" id="fileInputCampRef" ref="fileInputCampRef" class="form-control" v-on:change="handleFileChangeCamp" />
+                <span class="text-danger" v-if="state.errors.uploadedFile">{{ state.errors.uploadedFile }}</span>
+
+                <label for="fileInputRef" class="text-body g-0">File Result</label>
+                <input type="file" id="fileInputRef" ref="fileInputRef" class="form-control" v-on:change="handleFileChange" />
+                <span class="text-danger" v-if="state.errors.uploadedFile">{{ state.errors.uploadedFile }}</span>
+            </div>
+            <button type="submit" class="btn btn-dark" v-on:click="handleUpload" :disabled="state.isSubmittingUP">
+                Upload
+                <span v-if="state.isSubmittingUP" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            </button>
+              
+
+        </div>
+
+        <div class="col-md-3">
+            <p class="text-body">Receve Data</p>
+            <ul>
+                <li v-for="message in state.dataStoquer.messages" :key="">{{ state.dataStoquer.message }}</li>
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <p>{{ state.message }}</p>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/FrontEnd/Pages/Data/manage.cshtml.js"></script>
+}

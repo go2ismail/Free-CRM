@@ -49,6 +49,7 @@ public class DataContext : IdentityDbContext<ApplicationUser>, IEntityDbSet
     public DbSet<LeadActivity> LeadActivity { get; set; }
     public DbSet<SalesTeam> SalesTeam { get; set; }
     public DbSet<SalesRepresentative> SalesRepresentative { get; set; }
+    public DbSet<Config> Config { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -89,6 +90,7 @@ public class DataContext : IdentityDbContext<ApplicationUser>, IEntityDbSet
         modelBuilder.ApplyConfiguration(new LeadActivityConfiguration());
         modelBuilder.ApplyConfiguration(new SalesTeamConfiguration());
         modelBuilder.ApplyConfiguration(new SalesRepresentativeConfiguration());
+        modelBuilder.ApplyConfiguration(new ConfigConfiguration());
 
     }
 

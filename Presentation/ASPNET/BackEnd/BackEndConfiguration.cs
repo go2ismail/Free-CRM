@@ -99,7 +99,7 @@ public static class BackEndConfiguration
         //seed database with demo data
         if (configuration.GetValue<bool>("IsDemoVersion"))
         {
-            host.SeedDemoData();
+            //host.SeedDemoData();
         }
 
         if (environment.IsDevelopment())
