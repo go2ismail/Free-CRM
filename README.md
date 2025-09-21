@@ -179,6 +179,7 @@ Thanks for stopping by and reading this far! This project is supported by **INDO
 [![powerfull-mini-crm](https://cdn.shopify.com/s/files/1/0097/8422/9945/files/powerfull-mini-crm-for-smb.png?v=1737992595)](https://store.indotalent.com)
 [![katenjo-crm-saas](https://store.indotalent.com/cdn/shop/files/hero1_f05d44f6-1298-4d0c-a46d-05395a7731d1_1024x1024@2x.png?v=1737932377)](https://store.indotalent.com/collections/featured-product/products/katenjo-crm-full-stack-edition-saas-multi-tenant)
 [![customer relationship management software](https://store.indotalent.com/cdn/shop/files/hero-crm-platinum-customer-relationship-management3_b5af66b6-3af1-41a0-a90e-e39c6d05ac67_1024x1024@2x.jpg?v=1739085851)](https://store.indotalent.com/)
+[![customer relationship management software Blazor](https://store.indotalent.com/cdn/shop/files/hero01_1024x1024@2x.png?v=1758478421)](https://store.indotalent.com/)
 
 
 
