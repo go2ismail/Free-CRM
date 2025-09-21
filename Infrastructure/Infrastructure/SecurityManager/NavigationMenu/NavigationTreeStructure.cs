@@ -252,6 +252,23 @@ public static class NavigationTreeStructure
                     "IsModule": false
                 }
             ]
+        },
+        {
+            "URL": "#",
+            "Name": "Configuration",
+            "IsModule": true,
+            "Children": [
+                {
+                    "URL": "/Database/Initialise",
+                    "Name": "Initialize",
+                    "IsModule": false
+                },
+                {
+                    "URL": "/Database/TableList",
+                    "Name": "Table",
+                    "IsModule": false
+                }
+            ]
         }
     ]
     """;

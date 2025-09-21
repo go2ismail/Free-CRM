@@ -1,0 +1,15 @@
+﻿Id;EntityName;Prefix;Suffix;LastUsedCount;IsDeleted;CreatedAtUtc;CreatedById;UpdatedAtUtc;UpdatedById
+0becb380-84c7-4dd4-9c55-b2aa03fc0f48;Lead;;LEA;345;False;2025-03-24 18:34:10;;;
+387264d9-730d-4408-9134-b2aa03fbf63f;PurchaseOrder;;PO;78;False;2025-03-24 18:34:04;;;
+4b659366-b99c-482a-afa0-b2aa03fbf1d2;Product;;ART;19;False;2025-03-24 18:34:03;;;
+533ee765-4187-4307-a457-b2aa03fbfdf2;SalesRepresentative;;SR;50;False;2025-03-24 18:34:06;;;
+53da46f5-9736-4665-9072-b2aa03fc0116;Budget;;BUD;778;False;2025-03-24 18:34:06;;;
+606d4487-7086-409d-9b7e-b2aa03fc1a4b;LeadActivity;;LA;120;False;2025-03-24 18:34:13;;;
+696136be-bb36-4905-b327-b2aa03fbf0b5;Vendor;;VND;20;False;2025-03-24 18:34:02;;;
+742076fb-ea8e-4b35-8a30-b2aa03fc003a;Campaign;;CMP;36;False;2025-03-24 18:34:06;;;
+9e2b3a17-b619-477f-be6f-b2aa03fc1884;LeadContact;;LC;60;False;2025-03-24 18:34:12;;;
+9e2d0597-1cb4-4411-9fe3-b2aa03fbf245;SalesOrder;;SO;78;False;2025-03-24 18:34:03;;;
+a406edff-43f9-4a2a-b5a8-b2aa03fbf0fb;VendorContact;;VC;60;False;2025-03-24 18:34:02;;;
+da963878-8497-4ada-9320-b2aa03fc0e05;Expense;;EXP;60;False;2025-03-24 18:34:10;;;
+e4625e18-1bb0-41ac-b0e2-b2aa03fbef9e;Customer;;CST;20;False;2025-03-24 18:34:02;;;
+f7beff05-3bb6-4bdd-bb77-b2aa03fbf00c;CustomerContact;;CC;60;False;2025-03-24 18:34:02;;;

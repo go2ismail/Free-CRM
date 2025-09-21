@@ -267,6 +267,16 @@
                     throw error;
                 }
             },
+            createMainData2: async (expenseDate, title, amount, description, status, campaignId, createdById) => {
+                try {
+                    const response = await AxiosManager.post('/Expense/CreateExpense2', {
+                        expenseDate, title, amount, description, status, campaignId, createdById
+                    });
+                    return response;
+                } catch (error) {
+                    throw error;
+                }
+            },
             updateMainData: async (id, expenseDate, title, amount, description, status, campaignId, updatedById) => {
                 try {
                     const response = await AxiosManager.post('/Expense/UpdateExpense', {
@@ -334,7 +344,6 @@
         const handler = {
             handleSubmit: async function () {
                 try {
-
                     state.isSubmitting = true;
                     await new Promise(resolve => setTimeout(resolve, 300));
 
@@ -343,7 +352,7 @@
                     }
 
                     const response = state.id === ''
-                        ? await services.createMainData(state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId())
+                        ? await services.createMainData2(state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId())
                         : state.deleteMode
                             ? await services.deleteMainData(state.id, StorageManager.getUserId())
                             : await services.updateMainData(state.id, state.expenseDate, state.title, state.amount, state.description, state.status, state.campaignId, StorageManager.getUserId());
@@ -361,7 +370,62 @@
                         setTimeout(() => {
                             mainModal.obj.hide();
                         }, 2000);
-                    } else {
+                    } if (response.data.code === 204){
+                        Swal.fire({
+                            title: "The entered amount exceeds the limit",
+                            text: response.data.content.message,
+                            icon: "info",
+                            showCancelButton: true,
+                            confirmButtonText: "Continue",
+                            cancelButtonText: "Cancel",
+                        }).then(async (result) => { // Add async here
+                            if (result.isConfirmed) {
+                                try {
+                                    const valiny = await services.createMainData( // Add await
+                                        state.expenseDate,
+                                        state.title,
+                                        state.amount,
+                                        state.description,
+                                        state.status,
+                                        state.campaignId,
+                                        StorageManager.getUserId()
+                                    );
+                                    if (valiny.data.code === 200) {
+                                        await methods.populateMainData();
+                                        mainGrid.refresh();
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: state.deleteMode ? 'Delete Successful' : 'Save Successful',
+                                            text: 'Form will be closed...',
+                                            timer: 2000,
+                                            showConfirmButton: false
+                                        });
+                                        setTimeout(() => {
+                                            mainModal.obj.hide();
+                                        }, 2000);
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Save Failed',
+                                            text: valiny.data.message ?? 'Please check your data.',
+                                            confirmButtonText: 'Try Again'
+                                        });
+                                    }
+                                } catch (error) {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'An Error Occurred',
+                                        text: error.response?.data?.message ?? 'Please try again.',
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            } else {
+                                Swal.close();
+                            }
+                        });
+                    } 
+                    
+                    else {
                         Swal.fire({
                             icon: 'error',
                             title: state.deleteMode ? 'Delete Failed' : 'Save Failed',
@@ -369,7 +433,6 @@
                             confirmButtonText: 'Try Again'
                         });
                     }
-
                 } catch (error) {
                     Swal.fire({
                         icon: 'error',

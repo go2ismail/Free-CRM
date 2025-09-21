@@ -1,0 +1,7 @@
+﻿Id;Name;Description;IsDeleted;CreatedAtUtc;CreatedById;UpdatedAtUtc;UpdatedById
+05ab6ca0-c5bc-4b1a-8149-b2aa03fbf19c;Service;;False;2025-03-24 18:34:03;;;
+312a661a-b4f7-413f-bc11-b2aa03fbf19c;Device;;False;2025-03-24 18:34:03;;;
+46f90070-fcb6-42b8-88df-b2aa03fbf19c;Software;;False;2025-03-24 18:34:03;;;
+9ffd0960-70ae-4b9d-8a85-b2aa03fbf19c;Hardware;;False;2025-03-24 18:34:03;;;
+b03adc51-e65c-4834-a875-b2aa03fbf19c;Storage;;False;2025-03-24 18:34:03;;;
+c89b946d-6750-462b-8749-b2aa03fbf19c;Networking;;False;2025-03-24 18:34:03;;;

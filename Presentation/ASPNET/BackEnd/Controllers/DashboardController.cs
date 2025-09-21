@@ -87,6 +87,57 @@ public class DashboardController : BaseApiController
             Content = response
         });
     }
+    
+    [Authorize]
+    [HttpGet("GetCampaignBudget")]
+    public async Task<ActionResult<ApiSuccessResult<GetDashboardCampaignBudgetResult>>> GetCampaignBudgetAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var request = new GetDashboardCampaignBudgetRequest() { };
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetDashboardCampaignBudgetResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetCampaignBudgetAsync)}",
+            Content = response
+        });
+    }
+    
+    [Authorize]
+    [HttpGet("GetCampaignExpense")]
+    public async Task<ActionResult<ApiSuccessResult<GetDashboardCampaignExpenseResult>>> GetCampaignExpenseAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var request = new GetDashboardCampaignExpenseRequest() { };
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetDashboardCampaignExpenseResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetCampaignExpenseAsync)}",
+            Content = response
+        });
+    }
+    
+    [Authorize]
+    [HttpGet("GetCampaignBudgetExpense")]
+    public async Task<ActionResult<ApiSuccessResult<GetDashboardCampaignBudgetExpenseResult>>> GetCampaignBudgetExpenseAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var request = new GetDashboardCampaignBudgetExpenseRequest() { };
+        var response = await _sender.Send(request, cancellationToken);
+
+        return Ok(new ApiSuccessResult<GetDashboardCampaignBudgetExpenseResult>
+        {
+            Code = StatusCodes.Status200OK,
+            Message = $"Success executing {nameof(GetCampaignBudgetExpenseAsync)}",
+            Content = response
+        });
+    }
 
 
     [Authorize]

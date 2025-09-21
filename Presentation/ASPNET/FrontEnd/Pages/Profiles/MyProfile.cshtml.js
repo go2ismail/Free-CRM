@@ -1,4 +1,4 @@
-﻿const App = {
+﻿    const App = {
     setup() {
         const state = Vue.reactive({
             mainData: [],

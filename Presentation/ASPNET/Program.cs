@@ -14,6 +14,7 @@ if (!Directory.Exists(logPath))
 builder.Services.AddBackEndServices(builder.Configuration);
 builder.Services.AddFrontEndServices();
 
+
 var app = builder.Build();
 
 app.RegisterBackEndBuilder(app.Environment, app, builder.Configuration);

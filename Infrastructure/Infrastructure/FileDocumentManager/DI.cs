@@ -1,4 +1,8 @@
-﻿using Application.Common.Services.FileDocumentManager;
+﻿using Application.Common.Repositories;
+using Application.Common.Services.FileDocumentManager;
+using Domain.Entities;
+using Infrastructure.DataAccessManager.EFCore.Repositories;
+using Infrastructure.SeedManager.Demos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -10,6 +14,13 @@ public static class DI
     {
         services.Configure<FileDocumentSettings>(configuration.GetSection("FileDocumentManager"));
         services.AddTransient<IFileDocumentService, FileDocumentService>();
+        services.AddTransient<ICSVService, CSVService>();
+        
+        services.AddScoped(typeof(ICommandRepository<>), typeof(CommandRepository<>));
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
+        
+        services.AddScoped<SalesTeamSeeder>();
+        services.AddScoped<SalesRepresentativeSeeder>();
 
         return services;
     }

@@ -1,0 +1,6 @@
+﻿Id;Name;Description;IsDeleted;CreatedAtUtc;CreatedById;UpdatedAtUtc;UpdatedById
+4c3edef6-2bf8-401b-848a-b2aa03fbf09b;Distributor;;False;2025-03-24 18:34:02;;;
+748edc70-1c4c-49d3-9cf6-b2aa03fbf09b;Service Provider;;False;2025-03-24 18:34:02;;;
+957feeac-10a8-4c6b-84bf-b2aa03fbf09b;Manufacture;;False;2025-03-24 18:34:02;;;
+9843af2e-edcd-47d6-bcfe-b2aa03fbf09b;Supplier;;False;2025-03-24 18:34:02;;;
+a0c28c17-d127-44c4-827d-b2aa03fbf09b;Freelancer;;False;2025-03-24 18:34:02;;;

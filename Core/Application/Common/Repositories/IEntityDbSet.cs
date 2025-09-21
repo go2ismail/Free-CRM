@@ -32,6 +32,7 @@ public interface IEntityDbSet
     public DbSet<PurchaseOrderItem> PurchaseOrderItem { get; set; }
 
     public DbSet<Campaign> Campaign { get; set; }
+    public DbSet<Rate> Rate { get; set; }
     public DbSet<Budget> Budget { get; set; }
     public DbSet<Expense> Expense { get; set; }
     public DbSet<Lead> Lead { get; set; }

@@ -92,15 +92,16 @@ public static class BackEndConfiguration
     {
         // >>> Create database
         host.CreateDatabase();
+        
 
         //seed database with system data
         host.SeedSystemData();
 
         //seed database with demo data
-        if (configuration.GetValue<bool>("IsDemoVersion"))
-        {
-            host.SeedDemoData();
-        }
+        // if (configuration.GetValue<bool>("IsDemoVersion"))
+        // {
+        //     host.SeedDemoData();
+        // }
 
         if (environment.IsDevelopment())
         {
