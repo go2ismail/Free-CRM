@@ -40,6 +40,11 @@ public static class NavigationTreeStructure
             "Icon": "icon-layout",
             "Children": [
                 {
+                    "URL": "/Projects/ProjectList",
+                    "Name": "Project",
+                    "IsModule": false
+                },
+                {
                     "URL": "/Campaigns/CampaignList",
                     "Name": "Campaign",
                     "IsModule": false
