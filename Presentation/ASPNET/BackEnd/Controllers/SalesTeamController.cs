@@ -1,4 +1,4 @@
-﻿using Application.Features.SalesTeamManager.Commands;
+using Application.Features.SalesTeamManager.Commands;
 using Application.Features.SalesTeamManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -96,5 +96,7 @@ public class SalesTeamController : BaseApiController
 
 
 }
+
+
 
 

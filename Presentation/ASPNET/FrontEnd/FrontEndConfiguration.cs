@@ -1,4 +1,6 @@
-﻿namespace ASPNET.FrontEnd;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNET.FrontEnd;
 
 public static class FrontEndConfiguration
 {
@@ -7,6 +9,7 @@ public static class FrontEndConfiguration
         services.AddRazorPages(options =>
         {
             options.RootDirectory = "/FrontEnd/Pages";
+            options.Conventions.ConfigureFilter(new PageAuthorizationFilter());
         });
         return services;
     }

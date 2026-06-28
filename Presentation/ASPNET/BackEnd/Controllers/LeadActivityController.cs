@@ -1,4 +1,4 @@
-﻿using Application.Features.DeliveryOrderManager.Queries;
+using Application.Features.DeliveryOrderManager.Queries;
 using Application.Features.LeadActivityManager.Commands;
 using Application.Features.LeadActivityManager.Queries;
 using ASPNET.BackEnd.Common.Base;
@@ -134,5 +134,7 @@ public class LeadActivityController : BaseApiController
 
 
 }
+
+
 
 

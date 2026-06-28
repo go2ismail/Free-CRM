@@ -1,4 +1,4 @@
-﻿using Application.Common.Services.EmailManager;
+using Application.Common.Services.EmailManager;
 using Application.Common.Services.SecurityManager;
 using Domain.Entities;
 using Infrastructure.DataAccessManager.EFCore.Contexts;
@@ -88,9 +88,9 @@ public class SecurityService : ISecurityService
             throw new Exception("Invalid login credentials. NotSucceeded.");
         }
 
-        var accessToken = _tokenService.GenerateToken(user, null);
-        var refreshToken = _tokenService.GenerateRefreshToken();
         var roles = await _userManager.GetRolesAsync(user);
+        var accessToken = _tokenService.GenerateToken(user, roles.ToList());
+        var refreshToken = _tokenService.GenerateRefreshToken();
 
         var tokens = await _context.Token.Where(x => x.UserId == user.Id).ToListAsync(cancellationToken);
         foreach (var item in tokens)
@@ -108,6 +108,20 @@ public class SecurityService : ISecurityService
         await _context.AddAsync(token, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        // Set HttpOnly cookie for CSHTML page security
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpireInMinute", 30)),
+                Path = "/"
+            };
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("accessToken", accessToken, cookieOptions);
+        }
 
         return new LoginResultDto
         {
@@ -138,6 +152,18 @@ public class SecurityService : ISecurityService
                 _context.Remove(item);
             }
             await _context.SaveChangesAsync(cancellationToken);
+        }
+
+        // Remove HttpOnly cookie on logout
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            _httpContextAccessor.HttpContext.Response.Cookies.Delete("accessToken", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Path = "/"
+            });
         }
 
         return new LogoutResultDto
@@ -310,9 +336,9 @@ public class SecurityService : ISecurityService
         }
         _context.Token.Remove(registeredToken!);
 
-        var newAccessToken = _tokenService.GenerateToken(user, null);
-        var newRefreshToken = _tokenService.GenerateRefreshToken();
         var roles = await _userManager.GetRolesAsync(user);
+        var newAccessToken = _tokenService.GenerateToken(user, roles.ToList());
+        var newRefreshToken = _tokenService.GenerateRefreshToken();
 
         var token = new Token();
         token.UserId = user.Id;
@@ -324,6 +350,20 @@ public class SecurityService : ISecurityService
         await _context.AddAsync(token, cancellationToken);
 
         await _context.SaveChangesAsync(cancellationToken);
+
+        // Set HttpOnly cookie for CSHTML page security
+        if (_httpContextAccessor.HttpContext != null)
+        {
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = DateTime.UtcNow.AddMinutes(_configuration.GetValue<int>("Jwt:ExpireInMinute", 30)),
+                Path = "/"
+            };
+            _httpContextAccessor.HttpContext.Response.Cookies.Append("accessToken", newAccessToken, cookieOptions);
+        }
 
         return new RefreshTokenResultDto
         {
@@ -710,3 +750,8 @@ public class SecurityService : ISecurityService
     }
 
 }
+
+
+
+
+

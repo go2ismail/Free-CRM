@@ -1,4 +1,4 @@
-﻿using Application.Features.SalesOrderManager.Commands;
+using Application.Features.SalesOrderManager.Commands;
 using Application.Features.SalesOrderManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -112,5 +112,7 @@ public class SalesOrderController : BaseApiController
     }
 
 }
+
+
 
 

@@ -1,4 +1,4 @@
-﻿using Application.Features.CompanyManager.Commands;
+using Application.Features.CompanyManager.Commands;
 using Application.Features.CompanyManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -67,5 +67,7 @@ public class CompanyController : BaseApiController
 
 
 }
+
+
 
 

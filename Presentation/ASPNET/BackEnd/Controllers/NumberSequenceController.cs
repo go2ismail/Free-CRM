@@ -1,4 +1,4 @@
-﻿using Application.Features.NumberSequenceManager.Queries;
+using Application.Features.NumberSequenceManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
 using MediatR;
@@ -35,5 +35,7 @@ public class NumberSequenceController : BaseApiController
 
 
 }
+
+
 
 

@@ -1,4 +1,4 @@
-﻿using Infrastructure.SecurityManager.AspNetIdentity;
+using Infrastructure.SecurityManager.AspNetIdentity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,7 +10,7 @@ namespace Infrastructure.SecurityManager.Tokens;
 
 public interface ITokenService
 {
-    string GenerateToken(ApplicationUser user, List<Claim>? userClaims);
+    string GenerateToken(ApplicationUser user, List<string>? roles);
     string GenerateRefreshToken();
 }
 public class TokenService : ITokenService
@@ -30,7 +30,7 @@ public class TokenService : ITokenService
         return new SymmetricSecurityKey(keyBytes);
     }
 
-    public string GenerateToken(ApplicationUser user, List<Claim>? userClaims)
+    public string GenerateToken(ApplicationUser user, List<string>? roles)
     {
         var claims = new List<Claim>
         {
@@ -43,11 +43,12 @@ public class TokenService : ITokenService
             new Claim("CompanyName", user.LastName ?? ""),
         };
 
-        if (userClaims != null)
+        if (roles != null)
         {
-
-            claims.AddRange(userClaims);
-
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
+            }
         }
 
         var key = GetSymmetricSecurityKey();
@@ -74,4 +75,3 @@ public class TokenService : ITokenService
         }
     }
 }
-

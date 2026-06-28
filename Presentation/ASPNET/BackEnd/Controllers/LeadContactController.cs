@@ -1,4 +1,4 @@
-﻿using Application.Features.LeadContactManager.Commands;
+using Application.Features.LeadContactManager.Commands;
 using Application.Features.LeadContactManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -115,5 +115,7 @@ public class LeadContactController : BaseApiController
 
 
 }
+
+
 
 

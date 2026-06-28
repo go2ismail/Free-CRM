@@ -1,4 +1,4 @@
-﻿using Application.Features.SalesRepresentativeManager.Commands;
+using Application.Features.SalesRepresentativeManager.Commands;
 using Application.Features.SalesRepresentativeManager.Queries;
 using ASPNET.BackEnd.Common.Base;
 using ASPNET.BackEnd.Common.Models;
@@ -115,5 +115,7 @@ public class SalesRepresentativeController : BaseApiController
 
 
 }
+
+
 
 
