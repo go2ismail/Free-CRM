@@ -152,7 +152,7 @@ sudo docker compose up -d
 > - `-d` = run in background (detached), your terminal stays free
 
 **Process:**
-1. **Download SQL Server Express image** (~300 MB) — first time only
+1. **Download SQL Server 2022 image** (~300 MB) — first time only
 2. **Build the application image** from `Dockerfile` — every time code changes
 3. **Start SQL Server container** — waits until SQL is ready (health check)
 4. **Start API container** — after SQL is ready, the app connects to the database
@@ -172,7 +172,7 @@ sudo docker ps
 ```
 CONTAINER ID   IMAGE                      STATUS         PORTS                    NAMES
 abc123         crm-api:latest             Up 2 minutes   0.0.0.0:5000->5000/tcp   crm-api
-def456         mcr.microsoft.com/mssql/server:2022-express   Up 2 minutes   1433/tcp                 crm-sqlserver
+def456         mcr.microsoft.com/mssql/server:2022-latest    Up 2 minutes   1433/tcp                 crm-sqlserver
 ```
 
 > Both containers must show status **"Up"** (not "Exited" or "Restarting").
@@ -363,5 +363,3 @@ Free-CRM/
 
 ---
 
-**Good luck! 🚀**  
-If you have questions, please open an issue on the GitHub repository.
