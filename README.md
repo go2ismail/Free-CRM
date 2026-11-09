@@ -94,7 +94,24 @@ Additionally, it simplifies **deployment**, as all code resides in a single repo
   - **Lightweight and straightforward** API communication with Axios  
   - **Easy-to-customize** responsive UI powered by the AdminLTE template  
 
+# End-to-End Tests (Playwright)
 
+Free CRM ships with a committed **Playwright** suite that exercises the JSON API and the Razor Pages / Vue UI end to end. It is the gate used to validate the .NET 10 upgrade.
+
+- **81 tests** covering authentication, full CRUD for all **25 modules**, nested sales-order and purchase-order items, read-only pages and reports, and My Company / My Profile update-and-restore.
+- Serial execution (`workers: 1`) against a disposable `CRM-LTE-E2E` database, so runs are deterministic and never touch development data.
+- Runs against **Docker Compose** (`tests/e2e/docker-compose.e2e.yml`) or a local SQL Server using the provided helper scripts.
+
+Quick start:
+
+```powershell
+cd tests/e2e
+npm ci
+npx playwright install chromium
+npx playwright test
+```
+
+See [tests/e2e/README.md](tests/e2e/README.md) for the Docker Compose and local run instructions, environment variables, and known limitations.
 
 # Run The Project: Visual Studio  
 
