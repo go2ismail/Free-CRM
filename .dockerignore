@@ -3,5 +3,7 @@ obj/
 .git/
 .gitattributes
 .gitignore
+.kilo/
+tests/
 *.md
 LICENSE.txt

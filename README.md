@@ -68,7 +68,7 @@ Gain quick insights with **widgets and charts** for:
 - Manage **Sales Orders & Purchases** with tracking & reporting  
 
 🎯 **Challenge Yourself!**  
-Experience the blazing speed and efficiency of **.NET 9**, the latest breakthrough in performance from Microsoft. Explore our **live online demo** today and see firsthand how Free CRM can revolutionize your customer relationship management operations.  
+Experience the blazing speed and efficiency of **.NET 10**, the latest breakthrough in performance from Microsoft. Explore our **live online demo** today and see firsthand how Free CRM can revolutionize your customer relationship management operations.  
 
 
 # Monolithic Clean Architecture  
@@ -78,7 +78,7 @@ Free CRM is built using a **Monolithic Clean Architecture** approach, ensuring a
 Additionally, it simplifies **deployment**, as all code resides in a single repository with a well-optimized pipeline, reducing complexity. The **cohesive project structure** provides a clear and consistent source code pattern, making it easier for developers to understand and maintain the system. With the combination of Clean Architecture, CQRS, and MediatR, Free CRM delivers a **scalable, maintainable, and enterprise-ready solution**.
 
 # Technical Features
-- **ASP.NET Core 9.0 Headless API** (Back End)
+- **ASP.NET Core 10.0 Headless API** (Back End)
   - Clean Architecture
   - CQRS with MediatR
   - Repository Pattern
