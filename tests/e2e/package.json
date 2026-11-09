@@ -1,0 +1,19 @@
+{
+  "name": "free-crm-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Playwright end-to-end coverage for the Free CRM application",
+  "scripts": {
+    "test": "playwright test",
+    "test:api": "playwright test --project=api",
+    "test:ui": "playwright test --project=ui",
+    "test:smoke": "playwright test --project=ui tests/ui/auth.spec.ts tests/ui/navigation.spec.ts",
+    "typecheck": "tsc --noEmit",
+    "report": "playwright show-report"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.65.0",
+    "@types/node": "24.10.1",
+    "typescript": "^7.0.2"
+  }
+}

@@ -1,0 +1,20 @@
+services:
+  sqlserver:
+    container_name: crm-e2e-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: "YourStrong!Passw0rd"
+      MSSQL_PID: "Developer"
+
+  api:
+    container_name: crm-e2e-api
+    ports:
+      - "5055:5000"
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${E2E_ENVIRONMENT:-Docker}
+      ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=CRM-LTE-E2E;User=sa;Password=YourStrong!Passw0rd;TrustServerCertificate=True;"
+      Kestrel__Endpoints__Http__Url: "http://0.0.0.0:5000"
+      Jwt__ExpireInMinute: "240"
+      IsDemoVersion: "true"
+      Logging__LogLevel__Default: Warning
+      Logging__LogLevel__Microsoft: Warning
