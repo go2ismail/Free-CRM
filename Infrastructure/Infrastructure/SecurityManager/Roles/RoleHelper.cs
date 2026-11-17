@@ -16,4 +16,9 @@ public class RoleHelper
     {
         return "Profiles";
     }
+
+    public static string GetUsersRole()
+    {
+        return "Users";
+    }
 }

@@ -1,3 +1,4 @@
+using Application.Common.Exceptions;
 using Application.Common.Services.EmailManager;
 using Application.Common.Services.SecurityManager;
 using Domain.Entities;
@@ -439,18 +440,18 @@ public class SecurityService : ISecurityService
             throw new Exception($"Unable to load user with id: {userId}");
         }
 
+        var isDemoVersion = _configuration.GetValue<bool>("IsDemoVersion");
+        if (isDemoVersion && user.Email == _identitySettings.DefaultAdmin.Email)
+        {
+            throw new ForbiddenAccessException($"Update default admin password is not allowed in demo version.");
+        }
+
         var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
 
         if (!result.Succeeded)
         {
             var errors = string.Join(", ", result.Errors.Select(e => e.Description));
             throw new Exception($"Password change failed: {errors}");
-        }
-
-        var isDemoVersion = _configuration.GetValue<bool>("IsDemoVersion");
-        if (isDemoVersion && user.Email == _identitySettings.DefaultAdmin.Email)
-        {
-            throw new Exception($"Update default admin password is not allowed in demo version.");
         }
     }
 
@@ -563,7 +564,7 @@ public class SecurityService : ISecurityService
 
         if (user.Email == _identitySettings.DefaultAdmin.Email)
         {
-            throw new Exception($"Update default admin is not allowed.");
+            throw new ForbiddenAccessException($"Update default admin is not allowed.");
         }
 
         user.FirstName = firstName;
@@ -607,7 +608,7 @@ public class SecurityService : ISecurityService
 
         if (user.Email == _identitySettings.DefaultAdmin.Email)
         {
-            throw new Exception($"Update default admin is not allowed.");
+            throw new ForbiddenAccessException($"Update default admin is not allowed.");
         }
 
         user.IsDeleted = true;
@@ -633,11 +634,13 @@ public class SecurityService : ISecurityService
     }
 
     public async Task UpdatePasswordUserAsync(
+        string callerUserId,
         string userId,
         string newPassword,
         CancellationToken cancellationToken
         )
     {
+        await EnsureCallerCanManageUsersAsync(callerUserId);
 
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
@@ -645,10 +648,9 @@ public class SecurityService : ISecurityService
             throw new Exception($"Unable to load user with id: {userId}");
         }
 
-        var isDemoVersion = _configuration.GetValue<bool>("IsDemoVersion");
-        if (isDemoVersion && user.Email == _identitySettings.DefaultAdmin.Email)
+        if (user.Email == _identitySettings.DefaultAdmin.Email)
         {
-            throw new Exception($"Update default admin password is not allowed in demo version.");
+            throw new ForbiddenAccessException($"Update default admin password is not allowed.");
         }
 
         var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
@@ -679,12 +681,20 @@ public class SecurityService : ISecurityService
     }
 
     public async Task<List<string>> UpdateUserRoleAsync(
+            string callerUserId,
             string userId,
             string roleName,
             bool accessGranted,
             CancellationToken cancellationToken = default
         )
     {
+        await EnsureCallerCanManageUsersAsync(callerUserId);
+
+        if (string.Equals(callerUserId, userId, StringComparison.Ordinal))
+        {
+            throw new ForbiddenAccessException("Changing your own roles is not allowed.");
+        }
+
         var user = await _userManager.FindByIdAsync(userId);
         if (user == null)
         {
@@ -693,7 +703,7 @@ public class SecurityService : ISecurityService
 
         if (user.Email == _identitySettings.DefaultAdmin.Email)
         {
-            throw new Exception($"Update default admin is not allowed.");
+            throw new ForbiddenAccessException($"Update default admin is not allowed.");
         }
 
         var currentRoles = await _userManager.GetRolesAsync(user);
@@ -722,6 +732,20 @@ public class SecurityService : ISecurityService
 
         var updatedRoles = await _userManager.GetRolesAsync(user);
         return updatedRoles.ToList();
+    }
+
+    private async Task EnsureCallerCanManageUsersAsync(string callerUserId)
+    {
+        if (string.IsNullOrEmpty(callerUserId))
+        {
+            throw new ForbiddenAccessException("Caller identity is required.");
+        }
+
+        var caller = await _userManager.FindByIdAsync(callerUserId);
+        if (caller == null || !await _userManager.IsInRoleAsync(caller, RoleHelper.GetUsersRole()))
+        {
+            throw new ForbiddenAccessException("Caller is not allowed to manage users.");
+        }
     }
 
 

@@ -1,3 +1,4 @@
+using Application.Common.Exceptions;
 using Application.Features.SecurityManager.Commands;
 using Application.Features.SecurityManager.Queries;
 using ASPNET.BackEnd.Common.Base;
@@ -32,11 +33,12 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [AllowAnonymous]
+    [Authorize]
     [HttpPost("Logout")]
     public async Task<ActionResult<ApiSuccessResult<LogoutResult>>> LogoutAsync(LogoutRequest request, CancellationToken cancellationToken)
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var logoutRequest = new LogoutRequest { UserId = GetRequiredCurrentUserId() };
+        var response = await _sender.Send(logoutRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<LogoutResult>
         {
@@ -151,14 +153,14 @@ public class SecurityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Profiles")]
     [HttpGet("GetMyProfileList")]
     public async Task<ActionResult<ApiSuccessResult<GetMyProfileListResult>>> GetMyProfileListAsync(
-        [FromQuery] string userId,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        [FromQuery] string? userId = null
         )
     {
-        var request = new GetMyProfileListRequest { UserId = userId };
+        var request = new GetMyProfileListRequest { UserId = GetRequiredCurrentUserId() };
         var response = await _sender.Send(request, cancellationToken);
 
         return Ok(new ApiSuccessResult<GetMyProfileListResult>
@@ -169,14 +171,21 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Profiles")]
     [HttpPost("UpdateMyProfile")]
     public async Task<ActionResult<ApiSuccessResult<UpdateMyProfileResult>>> UpdateMyProfileAsync(
         UpdateMyProfileRequest request,
         CancellationToken cancellationToken
         )
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var updateRequest = new UpdateMyProfileRequest
+        {
+            UserId = GetRequiredCurrentUserId(),
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            CompanyName = request.CompanyName
+        };
+        var response = await _sender.Send(updateRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<UpdateMyProfileResult>
         {
@@ -186,14 +195,21 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Profiles")]
     [HttpPost("UpdateMyProfilePassword")]
     public async Task<ActionResult<ApiSuccessResult<UpdateMyProfilePasswordResult>>> UpdateMyProfilePasswordAsync(
         UpdateMyProfilePasswordRequest request,
         CancellationToken cancellationToken
         )
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var updateRequest = new UpdateMyProfilePasswordRequest
+        {
+            UserId = GetRequiredCurrentUserId(),
+            OldPassword = request.OldPassword,
+            NewPassword = request.NewPassword,
+            ConfirmNewPassword = request.ConfirmNewPassword
+        };
+        var response = await _sender.Send(updateRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<UpdateMyProfilePasswordResult>
         {
@@ -204,7 +220,7 @@ public class SecurityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Users,Roles")]
     [HttpGet("GetRoleList")]
     public async Task<ActionResult<ApiSuccessResult<GetRoleListResult>>> GetRoleListAsync(
         CancellationToken cancellationToken
@@ -222,7 +238,7 @@ public class SecurityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpGet("GetUserList")]
     public async Task<ActionResult<ApiSuccessResult<GetUserListResult>>> GetUserListAsync(
         CancellationToken cancellationToken
@@ -239,14 +255,26 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpPost("CreateUser")]
     public async Task<ActionResult<ApiSuccessResult<CreateUserResult>>> CreateUserAsync(
         CreateUserRequest request,
         CancellationToken cancellationToken
         )
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var createRequest = new CreateUserRequest
+        {
+            Email = request.Email,
+            Password = request.Password,
+            ConfirmPassword = request.ConfirmPassword,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            EmailConfirmed = request.EmailConfirmed,
+            IsBlocked = request.IsBlocked,
+            IsDeleted = request.IsDeleted,
+            CreatedById = GetRequiredCurrentUserId()
+        };
+        var response = await _sender.Send(createRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<CreateUserResult>
         {
@@ -257,14 +285,24 @@ public class SecurityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpPost("UpdateUser")]
     public async Task<ActionResult<ApiSuccessResult<UpdateUserResult>>> UpdateUserAsync(
         UpdateUserRequest request,
         CancellationToken cancellationToken
         )
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var updateRequest = new UpdateUserRequest
+        {
+            UserId = request.UserId,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            EmailConfirmed = request.EmailConfirmed,
+            IsBlocked = request.IsBlocked,
+            IsDeleted = request.IsDeleted,
+            UpdatedById = GetRequiredCurrentUserId()
+        };
+        var response = await _sender.Send(updateRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<UpdateUserResult>
         {
@@ -274,14 +312,19 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpPost("DeleteUser")]
     public async Task<ActionResult<ApiSuccessResult<DeleteUserResult>>> DeleteUserAsync(
     DeleteUserRequest request,
     CancellationToken cancellationToken
     )
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var deleteRequest = new DeleteUserRequest
+        {
+            UserId = request.UserId,
+            DeletedById = GetRequiredCurrentUserId()
+        };
+        var response = await _sender.Send(deleteRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<DeleteUserResult>
         {
@@ -292,14 +335,20 @@ public class SecurityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpPost("UpdatePasswordUser")]
     public async Task<ActionResult<ApiSuccessResult<UpdatePasswordUserResult>>> UpdatePasswordUserAsync(
     UpdatePasswordUserRequest request,
     CancellationToken cancellationToken
     )
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var updateRequest = new UpdatePasswordUserRequest
+        {
+            UserId = request.UserId,
+            NewPassword = request.NewPassword,
+            CallerUserId = GetRequiredCurrentUserId()
+        };
+        var response = await _sender.Send(updateRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<UpdatePasswordUserResult>
         {
@@ -309,7 +358,7 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpPost("GetUserRoles")]
     public async Task<ActionResult<ApiSuccessResult<GetUserRolesResult>>> GetUserRolesAsync(GetUserRolesRequest request, CancellationToken cancellationToken)
     {
@@ -323,11 +372,18 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Users")]
     [HttpPost("UpdateUserRole")]
     public async Task<ActionResult<ApiSuccessResult<UpdateUserRoleResult>>> UpdateUserRoleAsync(UpdateUserRoleRequest request, CancellationToken cancellationToken)
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var updateRequest = new UpdateUserRoleRequest
+        {
+            UserId = request.UserId,
+            RoleName = request.RoleName,
+            AccessGranted = request.AccessGranted,
+            CallerUserId = GetRequiredCurrentUserId()
+        };
+        var response = await _sender.Send(updateRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<UpdateUserRoleResult>
         {
@@ -337,11 +393,16 @@ public class SecurityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Profiles")]
     [HttpPost("UpdateMyProfileAvatar")]
     public async Task<ActionResult<ApiSuccessResult<UpdateMyProfileAvatarResult>>> UpdateMyProfileAvatarAsync(UpdateMyProfileAvatarRequest request, CancellationToken cancellationToken)
     {
-        var response = await _sender.Send(request, cancellationToken);
+        var updateRequest = new UpdateMyProfileAvatarRequest
+        {
+            UserId = GetRequiredCurrentUserId(),
+            Avatar = request.Avatar
+        };
+        var response = await _sender.Send(updateRequest, cancellationToken);
 
         return Ok(new ApiSuccessResult<UpdateMyProfileAvatarResult>
         {
@@ -349,6 +410,17 @@ public class SecurityController : BaseApiController
             Message = $"Success executing {nameof(UpdateMyProfileAvatarAsync)}",
             Content = response
         });
+    }
+
+    private string GetRequiredCurrentUserId()
+    {
+        var currentUserId = CurrentUserId;
+        if (string.IsNullOrEmpty(currentUserId))
+        {
+            throw new ForbiddenAccessException("Caller identity is required.");
+        }
+
+        return currentUserId;
     }
 
 }
