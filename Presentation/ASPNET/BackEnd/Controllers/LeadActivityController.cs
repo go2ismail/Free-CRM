@@ -16,7 +16,7 @@ public class LeadActivityController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpPost("CreateLeadActivity")]
     public async Task<ActionResult<ApiSuccessResult<CreateLeadActivityResult>>> CreateLeadActivityAsync(CreateLeadActivityRequest request, CancellationToken cancellationToken)
     {
@@ -30,7 +30,7 @@ public class LeadActivityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpPost("UpdateLeadActivity")]
     public async Task<ActionResult<ApiSuccessResult<UpdateLeadActivityResult>>> UpdateLeadActivityAsync(UpdateLeadActivityRequest request, CancellationToken cancellationToken)
     {
@@ -44,7 +44,7 @@ public class LeadActivityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpPost("DeleteLeadActivity")]
     public async Task<ActionResult<ApiSuccessResult<DeleteLeadActivityResult>>> DeleteLeadActivityAsync(DeleteLeadActivityRequest request, CancellationToken cancellationToken)
     {
@@ -58,7 +58,7 @@ public class LeadActivityController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpGet("GetLeadActivityList")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadActivityListResult>>> GetLeadActivityListAsync(
         CancellationToken cancellationToken,
@@ -77,7 +77,7 @@ public class LeadActivityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpGet("GetLeadActivitySingle")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadActivitySingleResult>>> GetLeadActivitySingleAsync(
     CancellationToken cancellationToken,
@@ -96,7 +96,7 @@ public class LeadActivityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpGet("GetLeadActivityByLeadIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadActivityByLeadIdListResult>>> GetLeadActivityByLeadIdListAsync(
     CancellationToken cancellationToken,
@@ -115,7 +115,7 @@ public class LeadActivityController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "LeadActivities")]
     [HttpGet("GetLeadActivityTypeList")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadActivityTypeListResult>>> GetLeadActivityTypeListAsync(
         CancellationToken cancellationToken

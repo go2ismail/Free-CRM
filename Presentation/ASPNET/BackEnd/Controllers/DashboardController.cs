@@ -15,7 +15,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetCRMDashboard")]
     public async Task<ActionResult<ApiSuccessResult<GetCRMDashboardResult>>> GetCRMDashboardAsync(
         CancellationToken cancellationToken
@@ -35,7 +35,7 @@ public class DashboardController : BaseApiController
 
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetLeadPipelineFunnel")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadPipelineFunnelResult>>> GetLeadPipelineFunnelAsync(
         CancellationToken cancellationToken
@@ -53,7 +53,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetSalesTeamLeadClosing")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesTeamLeadClosingResult>>> GetSalesTeamLeadClosingAsync(
         CancellationToken cancellationToken
@@ -71,7 +71,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetCampaignByStatus")]
     public async Task<ActionResult<ApiSuccessResult<GetCampaignByStatusResult>>> GetCampaignByStatusAsync(
         CancellationToken cancellationToken
@@ -89,7 +89,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetLeadActivityByType")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadActivityByTypeResult>>> GetLeadActivityByTypeAsync(
         CancellationToken cancellationToken
@@ -107,7 +107,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetCardsDashboard")]
     public async Task<ActionResult<ApiSuccessResult<GetCardsDashboardResult>>> GetCardsDashboardAsync(
         CancellationToken cancellationToken
@@ -125,7 +125,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetSalesDashboard")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesDashboardResult>>> GetSalesDashboardAsync(
         CancellationToken cancellationToken
@@ -143,7 +143,7 @@ public class DashboardController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Dashboards")]
     [HttpGet("GetPurchaseDashboard")]
     public async Task<ActionResult<ApiSuccessResult<GetPurchaseDashboardResult>>> GetPurchaseDashboardAsync(
         CancellationToken cancellationToken

@@ -15,7 +15,7 @@ public class ProductController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Products")]
     [HttpPost("CreateProduct")]
     public async Task<ActionResult<ApiSuccessResult<CreateProductResult>>> CreateProductAsync(CreateProductRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class ProductController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Products")]
     [HttpPost("UpdateProduct")]
     public async Task<ActionResult<ApiSuccessResult<UpdateProductResult>>> UpdateProductAsync(UpdateProductRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class ProductController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Products")]
     [HttpPost("DeleteProduct")]
     public async Task<ActionResult<ApiSuccessResult<DeleteProductResult>>> DeleteProductAsync(DeleteProductRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class ProductController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Products,SalesOrders,PurchaseOrders")]
     [HttpGet("GetProductList")]
     public async Task<ActionResult<ApiSuccessResult<GetProductListResult>>> GetProductListAsync(
         CancellationToken cancellationToken,

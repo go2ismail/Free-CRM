@@ -15,7 +15,7 @@ public class CustomerController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customers")]
     [HttpPost("CreateCustomer")]
     public async Task<ActionResult<ApiSuccessResult<CreateCustomerResult>>> CreateCustomerAsync(CreateCustomerRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class CustomerController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customers")]
     [HttpPost("UpdateCustomer")]
     public async Task<ActionResult<ApiSuccessResult<UpdateCustomerResult>>> UpdateCustomerAsync(UpdateCustomerRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class CustomerController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customers")]
     [HttpPost("DeleteCustomer")]
     public async Task<ActionResult<ApiSuccessResult<DeleteCustomerResult>>> DeleteCustomerAsync(DeleteCustomerRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class CustomerController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Customers,CustomerContacts,SalesOrders")]
     [HttpGet("GetCustomerList")]
     public async Task<ActionResult<ApiSuccessResult<GetCustomerListResult>>> GetCustomerListAsync(
         CancellationToken cancellationToken,

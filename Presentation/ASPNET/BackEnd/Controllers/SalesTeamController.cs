@@ -15,7 +15,7 @@ public class SalesTeamController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesTeams")]
     [HttpPost("CreateSalesTeam")]
     public async Task<ActionResult<ApiSuccessResult<CreateSalesTeamResult>>> CreateSalesTeamAsync(CreateSalesTeamRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class SalesTeamController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesTeams")]
     [HttpPost("UpdateSalesTeam")]
     public async Task<ActionResult<ApiSuccessResult<UpdateSalesTeamResult>>> UpdateSalesTeamAsync(UpdateSalesTeamRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class SalesTeamController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesTeams")]
     [HttpPost("DeleteSalesTeam")]
     public async Task<ActionResult<ApiSuccessResult<DeleteSalesTeamResult>>> DeleteSalesTeamAsync(DeleteSalesTeamRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class SalesTeamController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesTeams,Campaigns,Leads,SalesRepresentatives")]
     [HttpGet("GetSalesTeamList")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesTeamListResult>>> GetSalesTeamListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class SalesTeamController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "SalesTeams,Campaigns,Leads,SalesRepresentatives")]
     [HttpGet("GetSalesTeamSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesTeamSingleResult>>> GetSalesTeamSingleAsync(
     CancellationToken cancellationToken,

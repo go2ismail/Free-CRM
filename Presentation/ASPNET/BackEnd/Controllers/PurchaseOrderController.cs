@@ -15,7 +15,7 @@ public class PurchaseOrderController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "PurchaseOrders")]
     [HttpPost("CreatePurchaseOrder")]
     public async Task<ActionResult<ApiSuccessResult<CreatePurchaseOrderResult>>> CreatePurchaseOrderAsync(CreatePurchaseOrderRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class PurchaseOrderController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "PurchaseOrders")]
     [HttpPost("UpdatePurchaseOrder")]
     public async Task<ActionResult<ApiSuccessResult<UpdatePurchaseOrderResult>>> UpdatePurchaseOrderAsync(UpdatePurchaseOrderRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class PurchaseOrderController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "PurchaseOrders")]
     [HttpPost("DeletePurchaseOrder")]
     public async Task<ActionResult<ApiSuccessResult<DeletePurchaseOrderResult>>> DeletePurchaseOrderAsync(DeletePurchaseOrderRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class PurchaseOrderController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "PurchaseOrders")]
     [HttpGet("GetPurchaseOrderList")]
     public async Task<ActionResult<ApiSuccessResult<GetPurchaseOrderListResult>>> GetPurchaseOrderListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class PurchaseOrderController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "PurchaseOrders")]
     [HttpGet("GetPurchaseOrderStatusList")]
     public async Task<ActionResult<ApiSuccessResult<GetPurchaseOrderStatusListResult>>> GetPurchaseOrderStatusListAsync(
         CancellationToken cancellationToken
@@ -93,7 +93,7 @@ public class PurchaseOrderController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "PurchaseOrders")]
     [HttpGet("GetPurchaseOrderSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetPurchaseOrderSingleResult>>> GetPurchaseOrderSingleAsync(
     CancellationToken cancellationToken,
