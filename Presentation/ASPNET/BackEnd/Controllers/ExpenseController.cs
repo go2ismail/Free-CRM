@@ -15,7 +15,7 @@ public class ExpenseController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Expenses")]
     [HttpPost("CreateExpense")]
     public async Task<ActionResult<ApiSuccessResult<CreateExpenseResult>>> CreateExpenseAsync(CreateExpenseRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class ExpenseController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Expenses")]
     [HttpPost("UpdateExpense")]
     public async Task<ActionResult<ApiSuccessResult<UpdateExpenseResult>>> UpdateExpenseAsync(UpdateExpenseRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class ExpenseController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Expenses")]
     [HttpPost("DeleteExpense")]
     public async Task<ActionResult<ApiSuccessResult<DeleteExpenseResult>>> DeleteExpenseAsync(DeleteExpenseRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class ExpenseController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Expenses,Campaigns")]
     [HttpGet("GetExpenseList")]
     public async Task<ActionResult<ApiSuccessResult<GetExpenseListResult>>> GetExpenseListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class ExpenseController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Expenses,Campaigns")]
     [HttpGet("GetExpenseStatusList")]
     public async Task<ActionResult<ApiSuccessResult<GetExpenseStatusListResult>>> GetExpenseStatusListAsync(
         CancellationToken cancellationToken
@@ -94,7 +94,7 @@ public class ExpenseController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Expenses,Campaigns")]
     [HttpGet("GetExpenseSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetExpenseSingleResult>>> GetExpenseSingleAsync(
     CancellationToken cancellationToken,
@@ -113,7 +113,7 @@ public class ExpenseController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Expenses,Campaigns")]
     [HttpGet("GetExpenseByCampaignIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetExpenseByCampaignIdListResult>>> GetExpenseByCampaignIdListAsync(
     CancellationToken cancellationToken,

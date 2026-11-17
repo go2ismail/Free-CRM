@@ -15,7 +15,7 @@ public class TaxController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Taxs")]
     [HttpPost("CreateTax")]
     public async Task<ActionResult<ApiSuccessResult<CreateTaxResult>>> CreateTaxAsync(CreateTaxRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class TaxController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Taxs")]
     [HttpPost("UpdateTax")]
     public async Task<ActionResult<ApiSuccessResult<UpdateTaxResult>>> UpdateTaxAsync(UpdateTaxRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class TaxController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Taxs")]
     [HttpPost("DeleteTax")]
     public async Task<ActionResult<ApiSuccessResult<DeleteTaxResult>>> DeleteTaxAsync(DeleteTaxRequest request, CancellationToken cancellationToken)
     {
@@ -58,7 +58,7 @@ public class TaxController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Taxs,SalesOrders,PurchaseOrders")]
     [HttpGet("GetTaxList")]
     public async Task<ActionResult<ApiSuccessResult<GetTaxListResult>>> GetTaxListAsync(
         CancellationToken cancellationToken,

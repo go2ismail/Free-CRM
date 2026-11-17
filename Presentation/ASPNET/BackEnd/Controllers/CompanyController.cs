@@ -15,7 +15,7 @@ public class CompanyController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Companies")]
     [HttpPost("UpdateCompany")]
     public async Task<ActionResult<ApiSuccessResult<UpdateCompanyResult>>> UpdateCompanyAsync(UpdateCompanyRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class CompanyController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Companies")]
     [HttpGet("GetCompanySingle")]
     public async Task<ActionResult<ApiSuccessResult<GetCompanySingleResult>>> GetCompanySingleAsync(
         CancellationToken cancellationToken,
@@ -47,7 +47,7 @@ public class CompanyController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Companies")]
     [HttpGet("GetCompanyList")]
     public async Task<ActionResult<ApiSuccessResult<GetCompanyListResult>>> GetCompanyListAsync(
         CancellationToken cancellationToken,

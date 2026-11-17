@@ -106,6 +106,7 @@ public interface ISecurityService
         );
 
     public Task UpdatePasswordUserAsync(
+        string callerUserId,
         string userId,
         string newPassword,
         CancellationToken cancellationToken
@@ -117,6 +118,7 @@ public interface ISecurityService
         );
 
     public Task<List<string>> UpdateUserRoleAsync(
+        string callerUserId,
         string userId,
         string roleName,
         bool accessGranted,

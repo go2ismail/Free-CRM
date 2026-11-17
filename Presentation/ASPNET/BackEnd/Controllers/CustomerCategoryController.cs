@@ -15,7 +15,7 @@ public class CustomerCategoryController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerCategories")]
     [HttpPost("CreateCustomerCategory")]
     public async Task<ActionResult<ApiSuccessResult<CreateCustomerCategoryResult>>> CreateCustomerCategoryAsync(CreateCustomerCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class CustomerCategoryController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerCategories")]
     [HttpPost("UpdateCustomerCategory")]
     public async Task<ActionResult<ApiSuccessResult<UpdateCustomerCategoryResult>>> UpdateCustomerCategoryAsync(UpdateCustomerCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class CustomerCategoryController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerCategories")]
     [HttpPost("DeleteCustomerCategory")]
     public async Task<ActionResult<ApiSuccessResult<DeleteCustomerCategoryResult>>> DeleteCustomerCategoryAsync(DeleteCustomerCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class CustomerCategoryController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerCategories,Customers")]
     [HttpGet("GetCustomerCategoryList")]
     public async Task<ActionResult<ApiSuccessResult<GetCustomerCategoryListResult>>> GetCustomerCategoryListAsync(
         CancellationToken cancellationToken,

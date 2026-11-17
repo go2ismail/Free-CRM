@@ -15,7 +15,7 @@ public class VendorCategoryController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorCategories")]
     [HttpPost("CreateVendorCategory")]
     public async Task<ActionResult<ApiSuccessResult<CreateVendorCategoryResult>>> CreateVendorCategoryAsync(CreateVendorCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class VendorCategoryController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorCategories")]
     [HttpPost("UpdateVendorCategory")]
     public async Task<ActionResult<ApiSuccessResult<UpdateVendorCategoryResult>>> UpdateVendorCategoryAsync(UpdateVendorCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class VendorCategoryController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorCategories")]
     [HttpPost("DeleteVendorCategory")]
     public async Task<ActionResult<ApiSuccessResult<DeleteVendorCategoryResult>>> DeleteVendorCategoryAsync(DeleteVendorCategoryRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class VendorCategoryController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorCategories,Vendors")]
     [HttpGet("GetVendorCategoryList")]
     public async Task<ActionResult<ApiSuccessResult<GetVendorCategoryListResult>>> GetVendorCategoryListAsync(
         CancellationToken cancellationToken,

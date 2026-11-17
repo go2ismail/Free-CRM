@@ -23,7 +23,6 @@
 
                 const response = await logout();
                 if (response.data.code === 200) {
-                    StorageManager.clearStorage();
                     Swal.fire({
                         icon: 'success',
                         title: 'Logout Successful',
@@ -31,15 +30,13 @@
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 2000);
                 } else {
                     Swal.fire({
                         icon: 'error',
                         title: 'Logout Failed',
                         text: response.data.message ?? 'Logout Failed.',
-                        confirmButtonText: 'Try Again'
+                        timer: 2000,
+                        showConfirmButton: false
                     });
                 }
 
@@ -48,10 +45,15 @@
                     icon: 'error',
                     title: 'An Error Occurred',
                     text: error.response?.data?.message || 'Please try again.',
-                    confirmButtonText: 'OK'
+                    timer: 2000,
+                    showConfirmButton: false
                 });
             } finally {
                 state.isSubmitting = false;
+                StorageManager.clearStorage();
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 2000);
             }
         };
 

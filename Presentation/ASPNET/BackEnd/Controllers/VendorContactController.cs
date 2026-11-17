@@ -15,7 +15,7 @@ public class VendorContactController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorContacts,Vendors")]
     [HttpPost("CreateVendorContact")]
     public async Task<ActionResult<ApiSuccessResult<CreateVendorContactResult>>> CreateVendorContactAsync(CreateVendorContactRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class VendorContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorContacts,Vendors")]
     [HttpPost("UpdateVendorContact")]
     public async Task<ActionResult<ApiSuccessResult<UpdateVendorContactResult>>> UpdateVendorContactAsync(UpdateVendorContactRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class VendorContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorContacts,Vendors")]
     [HttpPost("DeleteVendorContact")]
     public async Task<ActionResult<ApiSuccessResult<DeleteVendorContactResult>>> DeleteVendorContactAsync(DeleteVendorContactRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class VendorContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "VendorContacts,Vendors")]
     [HttpGet("GetVendorContactList")]
     public async Task<ActionResult<ApiSuccessResult<GetVendorContactListResult>>> GetVendorContactListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class VendorContactController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "VendorContacts,Vendors")]
     [HttpGet("GetVendorContactByVendorIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetVendorContactByVendorIdListResult>>> GetVendorContactByVendorIdListAsync(
     CancellationToken cancellationToken,
