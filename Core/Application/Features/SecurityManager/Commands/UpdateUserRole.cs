@@ -1,6 +1,7 @@
 ﻿using Application.Common.Services.SecurityManager;
 using FluentValidation;
 using MediatR;
+using System.Text.Json.Serialization;
 
 namespace Application.Features.SecurityManager.Commands;
 
@@ -16,6 +17,9 @@ public class UpdateUserRoleRequest : IRequest<UpdateUserRoleResult>
     public string? UserId { get; init; }
     public string? RoleName { get; init; }
     public bool? AccessGranted { get; init; }
+
+    [JsonIgnore]
+    public string? CallerUserId { get; init; }
 }
 
 public class UpdateUserRoleValidator : AbstractValidator<UpdateUserRoleRequest>
@@ -39,6 +43,7 @@ public class UpdateUserRoleHandler : IRequestHandler<UpdateUserRoleRequest, Upda
     public async Task<UpdateUserRoleResult> Handle(UpdateUserRoleRequest request, CancellationToken cancellationToken)
     {
         var result = await _securityService.UpdateUserRoleAsync(
+            request.CallerUserId ?? "",
             request.UserId ?? "",
             request.RoleName ?? "",
             request.AccessGranted ?? true,

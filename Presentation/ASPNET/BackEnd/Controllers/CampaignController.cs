@@ -15,7 +15,7 @@ public class CampaignController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Campaigns")]
     [HttpPost("CreateCampaign")]
     public async Task<ActionResult<ApiSuccessResult<CreateCampaignResult>>> CreateCampaignAsync(CreateCampaignRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class CampaignController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Campaigns")]
     [HttpPost("UpdateCampaign")]
     public async Task<ActionResult<ApiSuccessResult<UpdateCampaignResult>>> UpdateCampaignAsync(UpdateCampaignRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class CampaignController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Campaigns")]
     [HttpPost("DeleteCampaign")]
     public async Task<ActionResult<ApiSuccessResult<DeleteCampaignResult>>> DeleteCampaignAsync(DeleteCampaignRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class CampaignController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Campaigns,Budgets,Expenses,Leads")]
     [HttpGet("GetCampaignList")]
     public async Task<ActionResult<ApiSuccessResult<GetCampaignListResult>>> GetCampaignListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class CampaignController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Campaigns,Budgets,Expenses,Leads")]
     [HttpGet("GetCampaignStatusList")]
     public async Task<ActionResult<ApiSuccessResult<GetCampaignStatusListResult>>> GetCampaignStatusListAsync(
         CancellationToken cancellationToken
@@ -94,7 +94,7 @@ public class CampaignController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Campaigns,Budgets,Expenses,Leads")]
     [HttpGet("GetCampaignSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetCampaignSingleResult>>> GetCampaignSingleAsync(
     CancellationToken cancellationToken,

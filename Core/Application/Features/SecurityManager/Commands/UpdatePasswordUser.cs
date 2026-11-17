@@ -1,6 +1,7 @@
 ﻿using Application.Common.Services.SecurityManager;
 using FluentValidation;
 using MediatR;
+using System.Text.Json.Serialization;
 
 namespace Application.Features.SecurityManager.Commands;
 
@@ -14,6 +15,9 @@ public class UpdatePasswordUserRequest : IRequest<UpdatePasswordUserResult>
 {
     public string? UserId { get; init; }
     public string? NewPassword { get; init; }
+
+    [JsonIgnore]
+    public string? CallerUserId { get; init; }
 }
 
 public class UpdatePasswordUserValidator : AbstractValidator<UpdatePasswordUserRequest>
@@ -37,6 +41,7 @@ public class UpdatePasswordUserHandler : IRequestHandler<UpdatePasswordUserReque
     public async Task<UpdatePasswordUserResult> Handle(UpdatePasswordUserRequest request, CancellationToken cancellationToken)
     {
         await _securityService.UpdatePasswordUserAsync(
+            request.CallerUserId ?? "",
             request.UserId ?? "",
             request.NewPassword ?? "",
             cancellationToken

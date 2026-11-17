@@ -1,4 +1,5 @@
-﻿using ASPNET.BackEnd.Common.Models;
+﻿using Application.Common.Exceptions;
+using ASPNET.BackEnd.Common.Models;
 using Microsoft.AspNetCore.Diagnostics;
 
 namespace ASPNET.BackEnd.Common.Handlers;
@@ -11,6 +12,7 @@ public class CustomExceptionHandler : IExceptionHandler
     {
         _exceptionHandlers = new()
             {
+                { typeof(ForbiddenAccessException), HandleForbiddenAccessException },
                 { typeof(Exception), HandleException },
             };
     }
@@ -29,6 +31,21 @@ public class CustomExceptionHandler : IExceptionHandler
             return true;
         }
 
+    }
+
+    private async Task HandleForbiddenAccessException(HttpContext httpContext, Exception ex)
+    {
+        httpContext.Response.StatusCode = StatusCodes.Status403Forbidden;
+
+        var result = new ApiErrorResult
+        {
+            Code = StatusCodes.Status403Forbidden,
+            Message = $"Exception: {ex.Message}",
+            Error = new Error(ex.InnerException?.Message, ex.Source, ex.StackTrace, ex.GetType().Name)
+        };
+
+        httpContext.Response.ContentType = "application/json";
+        await httpContext.Response.WriteAsJsonAsync(result);
     }
 
     private async Task HandleException(HttpContext httpContext, Exception ex)

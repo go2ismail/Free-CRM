@@ -15,7 +15,7 @@ public class SalesOrderItemController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesOrders")]
     [HttpPost("CreateSalesOrderItem")]
     public async Task<ActionResult<ApiSuccessResult<CreateSalesOrderItemResult>>> CreateSalesOrderItemAsync(CreateSalesOrderItemRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class SalesOrderItemController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesOrders")]
     [HttpPost("UpdateSalesOrderItem")]
     public async Task<ActionResult<ApiSuccessResult<UpdateSalesOrderItemResult>>> UpdateSalesOrderItemAsync(UpdateSalesOrderItemRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class SalesOrderItemController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesOrders")]
     [HttpPost("DeleteSalesOrderItem")]
     public async Task<ActionResult<ApiSuccessResult<DeleteSalesOrderItemResult>>> DeleteSalesOrderItemAsync(DeleteSalesOrderItemRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class SalesOrderItemController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesOrders,SalesReports")]
     [HttpGet("GetSalesOrderItemList")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesOrderItemListResult>>> GetSalesOrderItemListAsync(
         CancellationToken cancellationToken,
@@ -75,7 +75,7 @@ public class SalesOrderItemController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesOrders,SalesReports")]
     [HttpGet("GetSalesOrderItemBySalesOrderIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesOrderItemBySalesOrderIdListResult>>> GetSalesOrderItemBySalesOrderIdListAsync(
     CancellationToken cancellationToken,

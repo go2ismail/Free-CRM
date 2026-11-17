@@ -15,7 +15,7 @@ public class NumberSequenceController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "NumberSequences")]
     [HttpGet("GetNumberSequenceList")]
     public async Task<ActionResult<ApiSuccessResult<GetNumberSequenceListResult>>> GetNumberSequenceListAsync(
         CancellationToken cancellationToken,

@@ -15,7 +15,7 @@ public class LeadContactController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadContacts")]
     [HttpPost("CreateLeadContact")]
     public async Task<ActionResult<ApiSuccessResult<CreateLeadContactResult>>> CreateLeadContactAsync(CreateLeadContactRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class LeadContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadContacts")]
     [HttpPost("UpdateLeadContact")]
     public async Task<ActionResult<ApiSuccessResult<UpdateLeadContactResult>>> UpdateLeadContactAsync(UpdateLeadContactRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class LeadContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadContacts")]
     [HttpPost("DeleteLeadContact")]
     public async Task<ActionResult<ApiSuccessResult<DeleteLeadContactResult>>> DeleteLeadContactAsync(DeleteLeadContactRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class LeadContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "LeadContacts")]
     [HttpGet("GetLeadContactList")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadContactListResult>>> GetLeadContactListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class LeadContactController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "LeadContacts")]
     [HttpGet("GetLeadContactSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadContactSingleResult>>> GetLeadContactSingleAsync(
     CancellationToken cancellationToken,
@@ -95,7 +95,7 @@ public class LeadContactController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "LeadContacts")]
     [HttpGet("GetLeadContactByLeadIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetLeadContactByLeadIdListResult>>> GetLeadContactByLeadIdListAsync(
     CancellationToken cancellationToken,

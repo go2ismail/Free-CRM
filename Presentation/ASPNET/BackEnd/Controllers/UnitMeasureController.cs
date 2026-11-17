@@ -15,7 +15,7 @@ public class UnitMeasureController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "UnitMeasures")]
     [HttpPost("CreateUnitMeasure")]
     public async Task<ActionResult<ApiSuccessResult<CreateUnitMeasureResult>>> CreateUnitMeasureAsync(CreateUnitMeasureRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class UnitMeasureController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "UnitMeasures")]
     [HttpPost("UpdateUnitMeasure")]
     public async Task<ActionResult<ApiSuccessResult<UpdateUnitMeasureResult>>> UpdateUnitMeasureAsync(UpdateUnitMeasureRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class UnitMeasureController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "UnitMeasures")]
     [HttpPost("DeleteUnitMeasure")]
     public async Task<ActionResult<ApiSuccessResult<DeleteUnitMeasureResult>>> DeleteUnitMeasureAsync(DeleteUnitMeasureRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class UnitMeasureController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "UnitMeasures,Products")]
     [HttpGet("GetUnitMeasureList")]
     public async Task<ActionResult<ApiSuccessResult<GetUnitMeasureListResult>>> GetUnitMeasureListAsync(
         CancellationToken cancellationToken,

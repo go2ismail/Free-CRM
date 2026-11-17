@@ -15,7 +15,7 @@ public class CustomerGroupController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerGroups")]
     [HttpPost("CreateCustomerGroup")]
     public async Task<ActionResult<ApiSuccessResult<CreateCustomerGroupResult>>> CreateCustomerGroupAsync(CreateCustomerGroupRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class CustomerGroupController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerGroups")]
     [HttpPost("UpdateCustomerGroup")]
     public async Task<ActionResult<ApiSuccessResult<UpdateCustomerGroupResult>>> UpdateCustomerGroupAsync(UpdateCustomerGroupRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class CustomerGroupController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerGroups")]
     [HttpPost("DeleteCustomerGroup")]
     public async Task<ActionResult<ApiSuccessResult<DeleteCustomerGroupResult>>> DeleteCustomerGroupAsync(DeleteCustomerGroupRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class CustomerGroupController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerGroups,Customers")]
     [HttpGet("GetCustomerGroupList")]
     public async Task<ActionResult<ApiSuccessResult<GetCustomerGroupListResult>>> GetCustomerGroupListAsync(
         CancellationToken cancellationToken,

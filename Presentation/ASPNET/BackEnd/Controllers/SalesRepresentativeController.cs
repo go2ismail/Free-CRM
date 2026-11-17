@@ -15,7 +15,7 @@ public class SalesRepresentativeController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesRepresentatives")]
     [HttpPost("CreateSalesRepresentative")]
     public async Task<ActionResult<ApiSuccessResult<CreateSalesRepresentativeResult>>> CreateSalesRepresentativeAsync(CreateSalesRepresentativeRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class SalesRepresentativeController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesRepresentatives")]
     [HttpPost("UpdateSalesRepresentative")]
     public async Task<ActionResult<ApiSuccessResult<UpdateSalesRepresentativeResult>>> UpdateSalesRepresentativeAsync(UpdateSalesRepresentativeRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class SalesRepresentativeController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesRepresentatives")]
     [HttpPost("DeleteSalesRepresentative")]
     public async Task<ActionResult<ApiSuccessResult<DeleteSalesRepresentativeResult>>> DeleteSalesRepresentativeAsync(DeleteSalesRepresentativeRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class SalesRepresentativeController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "SalesRepresentatives")]
     [HttpGet("GetSalesRepresentativeList")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesRepresentativeListResult>>> GetSalesRepresentativeListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class SalesRepresentativeController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "SalesRepresentatives")]
     [HttpGet("GetSalesRepresentativeSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesRepresentativeSingleResult>>> GetSalesRepresentativeSingleAsync(
     CancellationToken cancellationToken,
@@ -95,7 +95,7 @@ public class SalesRepresentativeController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "SalesRepresentatives")]
     [HttpGet("GetSalesRepresentativeBySalesTeamIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetSalesRepresentativeBySalesTeamIdListResult>>> GetSalesRepresentativeBySalesTeamIdListAsync(
     CancellationToken cancellationToken,

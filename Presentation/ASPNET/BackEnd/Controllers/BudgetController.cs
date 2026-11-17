@@ -15,7 +15,7 @@ public class BudgetController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "Budgets")]
     [HttpPost("CreateBudget")]
     public async Task<ActionResult<ApiSuccessResult<CreateBudgetResult>>> CreateBudgetAsync(CreateBudgetRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class BudgetController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Budgets")]
     [HttpPost("UpdateBudget")]
     public async Task<ActionResult<ApiSuccessResult<UpdateBudgetResult>>> UpdateBudgetAsync(UpdateBudgetRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class BudgetController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Budgets")]
     [HttpPost("DeleteBudget")]
     public async Task<ActionResult<ApiSuccessResult<DeleteBudgetResult>>> DeleteBudgetAsync(DeleteBudgetRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class BudgetController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "Budgets,Campaigns")]
     [HttpGet("GetBudgetList")]
     public async Task<ActionResult<ApiSuccessResult<GetBudgetListResult>>> GetBudgetListAsync(
         CancellationToken cancellationToken,
@@ -76,7 +76,7 @@ public class BudgetController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Budgets,Campaigns")]
     [HttpGet("GetBudgetStatusList")]
     public async Task<ActionResult<ApiSuccessResult<GetBudgetStatusListResult>>> GetBudgetStatusListAsync(
         CancellationToken cancellationToken
@@ -94,7 +94,7 @@ public class BudgetController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Budgets,Campaigns")]
     [HttpGet("GetBudgetSingle")]
     public async Task<ActionResult<ApiSuccessResult<GetBudgetSingleResult>>> GetBudgetSingleAsync(
     CancellationToken cancellationToken,
@@ -113,7 +113,7 @@ public class BudgetController : BaseApiController
     }
 
 
-    [Authorize]
+    [Authorize(Roles = "Budgets,Campaigns")]
     [HttpGet("GetBudgetByCampaignIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetBudgetByCampaignIdListResult>>> GetBudgetByCampaignIdListAsync(
     CancellationToken cancellationToken,

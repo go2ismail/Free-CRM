@@ -15,7 +15,7 @@ public class ProductGroupController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "ProductGroups")]
     [HttpPost("CreateProductGroup")]
     public async Task<ActionResult<ApiSuccessResult<CreateProductGroupResult>>> CreateProductGroupAsync(CreateProductGroupRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class ProductGroupController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "ProductGroups")]
     [HttpPost("UpdateProductGroup")]
     public async Task<ActionResult<ApiSuccessResult<UpdateProductGroupResult>>> UpdateProductGroupAsync(UpdateProductGroupRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class ProductGroupController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "ProductGroups")]
     [HttpPost("DeleteProductGroup")]
     public async Task<ActionResult<ApiSuccessResult<DeleteProductGroupResult>>> DeleteProductGroupAsync(DeleteProductGroupRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class ProductGroupController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "ProductGroups,Products")]
     [HttpGet("GetProductGroupList")]
     public async Task<ActionResult<ApiSuccessResult<GetProductGroupListResult>>> GetProductGroupListAsync(
         CancellationToken cancellationToken,

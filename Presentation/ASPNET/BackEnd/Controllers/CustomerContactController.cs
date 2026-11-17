@@ -15,7 +15,7 @@ public class CustomerContactController : BaseApiController
     {
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerContacts,Customers")]
     [HttpPost("CreateCustomerContact")]
     public async Task<ActionResult<ApiSuccessResult<CreateCustomerContactResult>>> CreateCustomerContactAsync(CreateCustomerContactRequest request, CancellationToken cancellationToken)
     {
@@ -29,7 +29,7 @@ public class CustomerContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerContacts,Customers")]
     [HttpPost("UpdateCustomerContact")]
     public async Task<ActionResult<ApiSuccessResult<UpdateCustomerContactResult>>> UpdateCustomerContactAsync(UpdateCustomerContactRequest request, CancellationToken cancellationToken)
     {
@@ -43,7 +43,7 @@ public class CustomerContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerContacts,Customers")]
     [HttpPost("DeleteCustomerContact")]
     public async Task<ActionResult<ApiSuccessResult<DeleteCustomerContactResult>>> DeleteCustomerContactAsync(DeleteCustomerContactRequest request, CancellationToken cancellationToken)
     {
@@ -57,7 +57,7 @@ public class CustomerContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerContacts,Customers")]
     [HttpGet("GetCustomerContactList")]
     public async Task<ActionResult<ApiSuccessResult<GetCustomerContactListResult>>> GetCustomerContactListAsync(
         CancellationToken cancellationToken,
@@ -75,7 +75,7 @@ public class CustomerContactController : BaseApiController
         });
     }
 
-    [Authorize]
+    [Authorize(Roles = "CustomerContacts,Customers")]
     [HttpGet("GetCustomerContactByCustomerIdList")]
     public async Task<ActionResult<ApiSuccessResult<GetCustomerContactByCustomerIdListResult>>> GetCustomerContactByCustomerIdListAsync(
     CancellationToken cancellationToken,
