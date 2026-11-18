@@ -77,7 +77,8 @@ public class FileImageService : IFileImageService
 
     public async Task<byte[]> GetFileAsync(string fileName, CancellationToken cancellationToken = default)
     {
-        var filePath = Path.Combine(_folderPath, fileName);
+        var safeFileName = Path.GetFileName(fileName ?? string.Empty);
+        var filePath = Path.Combine(_folderPath, safeFileName);
 
         if (!File.Exists(filePath))
         {
